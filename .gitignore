@@ -26,4 +26,4 @@ hs_err_pid*
 /music4j/.classpath
 /music4j/.settings/
 /music4j/target/
-/music4j/src/main/java/org/music4j/api/grammar/gen
+/music4j/src/main/java/org/music4j/grammar/gen
