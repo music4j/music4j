@@ -48,7 +48,6 @@
                             <goal>antlr4</goal>
                         </goals>
                         <configuration>
-                            <libDirectory>src/main/java/org/music4j/rubato</libDirectory>
                             <sourceDirectory>src/main/java/org/music4j/grammar</sourceDirectory>
                             <outputDirectory>src/main/java/org/music4j/grammar/gen</outputDirectory>
                         </configuration>
