@@ -1,0 +1,8 @@
+//The file can be commented in one line.
+Score {
+
+    /*
+     * Even multiple lines are possible
+     */
+
+}

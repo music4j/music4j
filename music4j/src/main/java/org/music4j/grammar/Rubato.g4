@@ -12,5 +12,34 @@ grammar Rubato;
  */
 score
 :
-	'Score' '{' '}'
+    'Score' '{' '}'
+;
+
+/**
+ * Line comments are ignored
+ */
+LINE_COMMENT
+:
+    '//' .*? '\n' -> skip
+;
+
+/**
+  * Multiple line comments are ignored
+  */
+COMMENT
+:
+    '/*' .*? '*/' -> skip
+;
+
+/**
+ * Whitespace is ignored.
+ */
+WHITESPACE
+:
+    (
+        ' '
+        | '\t'
+        | '\n'
+        | '\r'
+    ) -> skip
 ;
