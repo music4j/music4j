@@ -1,6 +1,9 @@
 package org.music4j;
 
+import java.util.Collection;
 import java.util.NavigableSet;
+
+import org.music4j.simple.TreeNote;
 
 /**
  * A Note is a Set of {@linkplain Pitch Pitches}. Notes are the main part in any
@@ -16,6 +19,40 @@ import java.util.NavigableSet;
  * </ul>
  */
 public interface Note extends NavigableSet<Pitch>, Measurable {
+
+    /**
+     * Static factory for the note interface. Returns a rest of the specified
+     * duration.
+     *
+     * @param duration the duration of the note.
+     * @return a rest of the specified duration.
+     */
+    static Note of(BarTime duration) {
+        return new TreeNote(duration);
+    }
+
+    /**
+     * Static factory that creates a new note with the specified duration and
+     * pitches.
+     *
+     * @param duration the duration of the note
+     * @param pitches  the pitches of the note
+     * @return a note of the specified duration with the given pitches.
+     */
+    static Note of(BarTime duration, Collection<Pitch> pitches) {
+        return new TreeNote(duration, pitches);
+    }
+
+    /**
+     * Static factory method that returns a note equivalent to the given string representation.
+     *
+     * @param input the given string input.
+     * @return a note.
+     */
+    public static Note of(String string) {
+        return null;
+//        return TreeNote.parse(string);
+    }
 
     /**
      * Returns the duration of the Note as a BarTime. The duration of a Note is
