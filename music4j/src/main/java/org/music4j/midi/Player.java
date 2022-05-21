@@ -9,6 +9,7 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Transmitter;
 
+import org.music4j.Bar;
 import org.music4j.Note;
 import org.music4j.Pitch;
 import org.music4j.Voice;
@@ -20,7 +21,7 @@ public class Player {
     private final Synthesizer synthesizer;
     private final Receiver receiver;
 
-    //Midi translator translates music4j object to midi sequences
+    // Midi translator translates music4j object to midi sequences
     private final MidiTranslator translator;
 
     public Player() throws MidiUnavailableException {
@@ -43,6 +44,10 @@ public class Player {
         play(translator.translate(voice));
     }
 
+    public void play(Bar bar) throws MidiUnavailableException {
+        play(translator.translate(bar));
+    }
+
     private void play(Sequence seq) throws MidiUnavailableException {
         // Beide öffnen und verbinden
         sequencer.open();
@@ -56,7 +61,7 @@ public class Player {
         }
         sequencer.setTempoInBPM(120);
 
-        //Start sequencer
+        // Start sequencer
         while (true) {
             try {
                 sequencer.start();
@@ -81,7 +86,17 @@ public class Player {
     public static void main(String[] args) {
         try {
             Player player = new Player();
-            player.play(Voice.of("C''2 E'' G'' B'3/2 C''/4 D''/4 C''2 A''2 G'' C''' G'' F'' E''"));
+
+            Bar bar = Bar.of();
+            Voice voice = Voice.of("C''2 E'' G'' B'3/2 C''/4 D''/4 C''2 A''2 G'' C''' G'' F'' E''");
+            bar.add(voice);
+            bar.add(Voice.of(
+                    "C'/2 G'/2 E'/2 G'/2 C'/2 G'/2 E'/2 G'/2 "
+                    + "D'/2 G'/2 F'/2 G'/2 C'/2 G'/2 E'/2 G'/2"
+                    + " C'/2 A'/2 F'/2 A'/2 C'/2 G'/2 E'/2 G'/2"
+                    + " B/2 G'/2 D'/2 G'/2 C'/2 G'/2 E'/2 G'/2"));
+
+            player.play(bar);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

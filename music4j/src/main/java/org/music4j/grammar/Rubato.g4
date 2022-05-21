@@ -15,20 +15,40 @@
      'Score' '{' '}'
  ;
 
+/**
+ * A bar can have multiple baritem which are distributed to the voice and frame. All attributes are
+ * routed to the same frame whereas notes are separated by the '&' sign
+ */
+ bar
+ :
+     baritem+
+     (
+         '&' baritem*
+     )*
+ ;
+
+ /**
+ * In order for bars to have
+ */
+ baritem
+ :
+     note
+ ;
+
  /**
  * Rule is only used for the static factory of the Voice object.
  */
-voice
-:
-    note+
-;
+ voice
+ :
+     note+
+ ;
 
-note
-:
-    pitch duration? # noteSingle
-    | '[' pitch+ ']' duration? # noteChord
-    | 'R' duration? # noteRest
-;
+ note
+ :
+     pitch duration? # noteSingle
+     | '[' pitch+ ']' duration? # noteChord
+     | 'R' duration? # noteRest
+ ;
 
  /**
  * A pitch consists of a mandatory step and optional alteration and octave. If the no alteration
@@ -44,11 +64,11 @@ note
  */
  alter
  :
-         FLAT # alterFlat
-         | FLAT_FLAT #alterFlatFlat
-         | DOUBLE_SHARP #alterDoubleSharp
-         | SHARP #alterSharp
-         | NATURAL #alterNatural
+     FLAT # alterFlat
+     | FLAT_FLAT # alterFlatFlat
+     | DOUBLE_SHARP # alterDoubleSharp
+     | SHARP # alterSharp
+     | NATURAL # alterNatural
  ;
 
  /**
@@ -60,12 +80,12 @@ note
      | COMMA+
  ;
 
-duration
-:
-    INT '/' INT # durationFraction
-    | '/' INT # durationInvertedInteger
-    | INT # durationInteger
-;
+ duration
+ :
+     INT '/' INT # durationFraction
+     | '/' INT # durationInvertedInteger
+     | INT # durationInteger
+ ;
 
  /*
  * ---------------------------------------------Lexer rules---------------------------------------------
@@ -133,10 +153,10 @@ duration
  ;
 
  INT
-:
-    '0'
-    | [1-9] [0-9]*
-;
+ :
+     '0'
+     | [1-9] [0-9]*
+ ;
 
  /*
  * ---------------------------------------------Comments and Whitespace handling---------------------------------------------
