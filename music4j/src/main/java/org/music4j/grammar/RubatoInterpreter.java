@@ -2,16 +2,24 @@ package org.music4j.grammar;
 
 import java.util.List;
 
-import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.music4j.BarTime;
 import org.music4j.Pitch;
 import org.music4j.Pitch.Alter;
 import org.music4j.Pitch.Octave;
 import org.music4j.Pitch.Step;
 import org.music4j.Score;
 import org.music4j.grammar.gen.RubatoBaseVisitor;
-import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.grammar.gen.RubatoParser.AlterContext;
+import org.music4j.grammar.gen.RubatoParser.AlterDoubleSharpContext;
+import org.music4j.grammar.gen.RubatoParser.AlterFlatContext;
+import org.music4j.grammar.gen.RubatoParser.AlterFlatFlatContext;
+import org.music4j.grammar.gen.RubatoParser.AlterNaturalContext;
+import org.music4j.grammar.gen.RubatoParser.AlterSharpContext;
+import org.music4j.grammar.gen.RubatoParser.DurationContext;
+import org.music4j.grammar.gen.RubatoParser.DurationFractionContext;
+import org.music4j.grammar.gen.RubatoParser.DurationIntegerContext;
+import org.music4j.grammar.gen.RubatoParser.DurationInvertedIntegerContext;
 import org.music4j.grammar.gen.RubatoParser.OctaveContext;
 import org.music4j.grammar.gen.RubatoParser.PitchContext;
 import org.music4j.grammar.gen.RubatoParser.ScoreContext;
@@ -62,20 +70,58 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
      * Returns a Alteration to a alter context
      */
     public Alter visitAlter(AlterContext alterNode) {
-        Token alterToken = alterNode.alterToken;
-        if (alterToken.getType() == RubatoParser.FLAT) {
-            return Alter.FLAT;
-        } else if (alterToken.getType() == RubatoParser.FLAT_FLAT) {
-            return Alter.FLAT_FLAT;
-        } else if (alterToken.getType() == RubatoParser.SHARP) {
-            return Alter.SHARP;
-        } else if (alterToken.getType() == RubatoParser.DOUBLE_SHARP) {
-            return Alter.DOUBLE_SHARP;
-        } else if (alterToken.getType() == RubatoParser.NATURAL) {
-            return Alter.NATURAL;
-        } else {
-            return Alter.NATURAL;
-        }
+        return (Alter) visit(alterNode);
+    }
+
+    @Override
+    public Alter visitAlterDoubleSharp(AlterDoubleSharpContext ctx) {
+        return Alter.DOUBLE_SHARP;
+    }
+
+    @Override
+    public Alter visitAlterFlat(AlterFlatContext ctx) {
+        return Alter.FLAT;
+    }
+
+    @Override
+    public Alter visitAlterFlatFlat(AlterFlatFlatContext ctx) {
+        return Alter.FLAT_FLAT;
+    }
+
+    @Override
+    public Alter visitAlterNatural(AlterNaturalContext ctx) {
+        return Alter.NATURAL;
+    }
+
+    @Override
+    public Alter visitAlterSharp(AlterSharpContext ctx) {
+        return Alter.SHARP;
+    }
+
+    /**
+     * Returns a BarTime to a Duration context object
+     */
+    public BarTime visitDuration(DurationContext ctx) {
+        return (BarTime) visit(ctx);
+    }
+
+    @Override
+    public BarTime visitDurationFraction(DurationFractionContext ctx) {
+        TerminalNode num = ctx.INT(0);
+        TerminalNode den = ctx.INT(1);
+        return BarTime.of(Integer.parseInt(num.getText()), Integer.parseInt(den.getText()));
+    }
+
+    @Override
+    public BarTime visitDurationInvertedInteger(DurationInvertedIntegerContext ctx) {
+        TerminalNode den = ctx.INT();
+        return BarTime.of(1, Integer.parseInt(den.getText()));
+    }
+
+    @Override
+    public BarTime visitDurationInteger(DurationIntegerContext ctx) {
+        TerminalNode num = ctx.INT();
+        return BarTime.of(Integer.parseInt(num.getText()));
     }
 
 }

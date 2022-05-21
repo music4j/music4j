@@ -3,6 +3,16 @@ package org.music4j;
 import java.util.Comparator;
 import java.util.Objects;
 
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.music4j.grammar.RubatoInterpreter;
+import org.music4j.grammar.gen.RubatoLexer;
+import org.music4j.grammar.gen.RubatoParser;
+
 /**
  * A BarTime is a rational number which represents the duration of a Note or a
  * specific time event in a Voice. We define that a BarTime of 1 represents the
@@ -120,6 +130,30 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
      */
     public static BarTime of(int i) {
         return BarTime.of(i, 1);
+    }
+
+    /**
+     * Static factory method that returns a BarTime with a completely irreducible
+     * fraction representation that is equal to the given string input. If such a
+     * {@code BarTime} has already been created this same object is returned.
+     * Otherwise such a {@code BarTime} is created and cached.
+     *
+     * @return a BarTime in a completely irreducible form.
+     * @throws ArithmeticException      if the denominator is zero.
+     * @throws IllegalArgumentException if the input cannot be processed.
+     */
+    public static BarTime of(String string) {
+        try {
+            CharStream input = CharStreams.fromString(string);
+            RubatoLexer lexer = new RubatoLexer(input);
+            TokenStream tokens = new CommonTokenStream(lexer);
+            RubatoParser parser = new RubatoParser(tokens);
+            parser.setErrorHandler(new BailErrorStrategy());
+            RubatoInterpreter interpreter = new RubatoInterpreter();
+            return interpreter.visitDuration(parser.duration());
+        } catch (ParseCancellationException e) {
+            throw new IllegalArgumentException(String.format("The given input \"%s\" cannot be processed.", string));
+        }
     }
 
     /**

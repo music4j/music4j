@@ -29,14 +29,11 @@
  */
  alter
  :
-     alterToken =
-     (
-         FLAT
-         | FLAT_FLAT
-         | DOUBLE_SHARP
-         | SHARP
-         | NATURAL
-     )
+         FLAT # alterFlat
+         | FLAT_FLAT #alterFlatFlat
+         | DOUBLE_SHARP #alterDoubleSharp
+         | SHARP #alterSharp
+         | NATURAL #alterNatural
  ;
 
  /**
@@ -47,6 +44,13 @@
      LINED+
      | COMMA+
  ;
+
+duration
+:
+    INT '/' INT # durationFraction
+    | '/' INT # durationInvertedInteger
+    | INT # durationInteger
+;
 
  /*
  * ---------------------------------------------Lexer rules---------------------------------------------
@@ -113,8 +117,14 @@
      ','
  ;
 
+ INT
+:
+    '0'
+    | [1-9] [0-9]*
+;
+
  /*
- * ---------------------------------------------Comment rules---------------------------------------------
+ * ---------------------------------------------Comments and Whitespace handling---------------------------------------------
  */
 /**
  * Line comments are ignored

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.music4j.BarTime;
 
@@ -319,31 +320,31 @@ class BarTimeTest {
         assertEquals("4", first.toString());
     }
 
-//    @Nested
-//    class BarTimeParserTest {
-//
-//        @Test
-//        void parseInt() {
-//            BarTime time = BarTime.of("3");
-//            assertEquals(BarTime.of(3), time);
-//        }
-//
-//        @Test
-//        void parseInvertedInt() {
-//            BarTime time = BarTime.of("/3");
-//            assertEquals(BarTime.of(1,3), time);
-//        }
-//
-//        @Test
-//        void parseFraction() {
-//            BarTime time = BarTime.of("7/3");
-//            assertEquals(BarTime.of(7,3), time);
-//        }
-//
-//        @Test
-//        void parseThrowsException() {
-//            IllegalArgumentException e = assertThrows(IllegalArgumentException.class ,() -> BarTime.of("1//2"));
-//            assertEquals("The given input \"1//2\" cannot be processed.", e.getMessage());
-//        }
-//    }
+    @Nested
+    class BarTimeParserTest {
+
+        @Test
+        void parseInt() {
+            BarTime time = BarTime.of("3");
+            assertEquals(BarTime.of(3), time);
+        }
+
+        @Test
+        void parseInvertedInt() {
+            BarTime time = BarTime.of("/3");
+            assertEquals(BarTime.of(1,3), time);
+        }
+
+        @Test
+        void parseFraction() {
+            BarTime time = BarTime.of("7/3");
+            assertEquals(BarTime.of(7,3), time);
+        }
+
+        @Test
+        void parseThrowsException() {
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class ,() -> BarTime.of("1//2"));
+            assertEquals("The given input \"1//2\" cannot be processed.", e.getMessage());
+        }
+    }
 }
