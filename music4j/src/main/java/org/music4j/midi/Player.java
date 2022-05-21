@@ -21,31 +21,27 @@ public class Player {
     private final Synthesizer synthesizer;
     private final Receiver receiver;
 
-    // Midi translator translates music4j object to midi sequences
-    private final MidiTranslator translator;
-
     public Player() throws MidiUnavailableException {
         sequencer = MidiSystem.getSequencer();
         transmitter = sequencer.getTransmitter();
         synthesizer = MidiSystem.getSynthesizer();
         receiver = synthesizer.getReceiver();
-        translator = new MidiTranslator();
     }
 
     public void play(Pitch pitch) throws MidiUnavailableException {
-        play(translator.translate(pitch));
+        play(new MidiTranslator(pitch).getSequnece());
     }
 
     public void play(Note note) throws MidiUnavailableException {
-        play(translator.translate(note));
+        play(new MidiTranslator(note).getSequnece());
     }
 
     public void play(Voice voice) throws MidiUnavailableException {
-        play(translator.translate(voice));
+        play(new MidiTranslator(voice).getSequnece());
     }
 
     public void play(Bar bar) throws MidiUnavailableException {
-        play(translator.translate(bar));
+        play(new MidiTranslator(bar).getSequnece());
     }
 
     private void play(Sequence seq) throws MidiUnavailableException {
