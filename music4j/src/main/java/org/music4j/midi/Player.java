@@ -1,8 +1,8 @@
 package org.music4j.midi;
 
-import java.util.List;
-
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
@@ -15,32 +15,36 @@ import org.music4j.Pitch.Step;
 
 public class Player {
 
-    private static void playNotes() throws Exception {
+    private final Sequencer sequencer;
+    private final Transmitter transmitter;
+    private final Synthesizer synthesizer;
+    private final Receiver receiver;
 
-        List<Pitch> pitches = List.of(
-                Pitch.of(Step.C, Alter.NATURAL, Octave.ONE_LINED),
-                Pitch.of(Step.E, Alter.FLAT, Octave.ONE_LINED),
-                Pitch.of(Step.G, Alter.NATURAL, Octave.ONE_LINED),
-                Pitch.of(Step.F, Alter.SHARP, Octave.ONE_LINED),
-                Pitch.of(Step.G, Alter.NATURAL, Octave.ONE_LINED),
-                Pitch.of(Step.E, Alter.FLAT, Octave.ONE_LINED),
-                Pitch.of(Step.C, Alter.NATURAL, Octave.ONE_LINED)
-                );
+    //Midi translator translates music4j object to midi sequences
+    private final MidiTranslator translator;
 
-        // Sequencer und Synthesizer initialisieren
-        Sequencer sequencer = MidiSystem.getSequencer();
-        Transmitter trans = sequencer.getTransmitter();
-        Synthesizer synth = MidiSystem.getSynthesizer();
-        Receiver rcvr = synth.getReceiver();
+    public Player() throws MidiUnavailableException {
+        sequencer = MidiSystem.getSequencer();
+        transmitter = sequencer.getTransmitter();
+        synthesizer = MidiSystem.getSynthesizer();
+        receiver = synthesizer.getReceiver();
+        translator = new MidiTranslator();
+    }
+
+    public void play(Pitch pitch) throws MidiUnavailableException {
         // Beide öffnen und verbinden
         sequencer.open();
-        synth.open();
-        trans.setReceiver(rcvr);
+        synthesizer.open();
+        transmitter.setReceiver(receiver);
 
-        MidiTranslator translator = new MidiTranslator();
+        try {
+            sequencer.setSequence(translator.translate(pitch));
+        } catch (InvalidMidiDataException e1) {
+            throw new RuntimeException(e1);
+        }
+        sequencer.setTempoInBPM(120);
 
-        sequencer.setSequence(translator.translate(pitches));
-        sequencer.setTempoInBPM(145);
+        //Start sequencer
         sequencer.start();
         while (true) {
             try {
@@ -55,12 +59,17 @@ public class Player {
         // Sequencer anhalten und Geräte schließen
         sequencer.stop();
         sequencer.close();
-        synth.close();
+        synthesizer.close();
+    }
+
+    public boolean isRunning() {
+        return sequencer.isRunning();
     }
 
     public static void main(String[] args) {
         try {
-            playNotes();
+            Player player = new Player();
+            player.play(Pitch.of(Step.C, Alter.NATURAL, Octave.ONE_LINED));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);
