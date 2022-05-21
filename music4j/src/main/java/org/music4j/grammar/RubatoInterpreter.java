@@ -10,6 +10,7 @@ import org.music4j.Pitch.Alter;
 import org.music4j.Pitch.Octave;
 import org.music4j.Pitch.Step;
 import org.music4j.Score;
+import org.music4j.Voice;
 import org.music4j.grammar.gen.RubatoBaseVisitor;
 import org.music4j.grammar.gen.RubatoParser.AlterContext;
 import org.music4j.grammar.gen.RubatoParser.AlterDoubleSharpContext;
@@ -28,6 +29,7 @@ import org.music4j.grammar.gen.RubatoParser.NoteSingleContext;
 import org.music4j.grammar.gen.RubatoParser.OctaveContext;
 import org.music4j.grammar.gen.RubatoParser.PitchContext;
 import org.music4j.grammar.gen.RubatoParser.ScoreContext;
+import org.music4j.grammar.gen.RubatoParser.VoiceContext;
 import org.music4j.grammar.gen.RubatoVisitor;
 
 /**
@@ -44,6 +46,18 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     @Override
     public Score visitScore(ScoreContext ctx) {
         return Score.of();
+    }
+
+    @Override
+    public Voice visitVoice(VoiceContext ctx) {
+        BarTime counter = BarTime.ZERO;
+        Voice voice = Voice.of();
+        for (NoteContext noteCtx : ctx.note()) {
+            Note note = visitNote(noteCtx);
+            voice.put(counter, note);
+            counter = counter.plus(note.getDuration());
+        }
+        return voice;
     }
 
     /**

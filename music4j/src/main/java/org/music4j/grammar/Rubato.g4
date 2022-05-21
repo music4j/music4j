@@ -15,6 +15,14 @@
      'Score' '{' '}'
  ;
 
+ /**
+ * Rule is only used for the static factory of the Voice object.
+ */
+voice
+:
+    note+
+;
+
 note
 :
     pitch duration? # noteSingle
