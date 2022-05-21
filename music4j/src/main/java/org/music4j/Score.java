@@ -2,6 +2,7 @@ package org.music4j;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.music4j.simple.ArrayScore;
 
@@ -9,7 +10,7 @@ import org.music4j.simple.ArrayScore;
  * A Score is an ordered list of Parts. This interface defines a root object for
  * all musical objects in the api.
  */
-public interface Score {
+public interface Score extends List<Part>{
 
     /**
      * Returns an empty Score.

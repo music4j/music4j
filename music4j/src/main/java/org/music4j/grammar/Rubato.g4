@@ -12,7 +12,27 @@
  */
  score
  :
-     'Score' '{' '}'
+     'Score' '{' part* '}'
+ ;
+
+ /**
+ * A part consist of zero or more staffs
+ */
+ part
+ :
+     'Part' '{' staff* '}'
+ ;
+
+ /**
+ * A Staff consists of one or more staffs
+ */
+ staff
+ :
+     'Staff' '{' '}' # staffEmpty
+     | 'Staff' '{' bar
+     (
+         '|' bar
+     )* '}' # staffBar
  ;
 
  /**
@@ -32,7 +52,10 @@
      barItem*
  ;
 
-barItem: note #barItemNote;
+ barItem
+ :
+     note # barItemNote
+ ;
 
  /**
  * Rule is only used for the static factory of the Voice object.

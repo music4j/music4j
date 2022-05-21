@@ -6,11 +6,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.music4j.Bar;
 import org.music4j.BarTime;
 import org.music4j.Note;
+import org.music4j.Part;
 import org.music4j.Pitch;
 import org.music4j.Pitch.Alter;
 import org.music4j.Pitch.Octave;
 import org.music4j.Pitch.Step;
 import org.music4j.Score;
+import org.music4j.Staff;
 import org.music4j.Voice;
 import org.music4j.grammar.gen.RubatoBaseVisitor;
 import org.music4j.grammar.gen.RubatoParser.AlterContext;
@@ -32,8 +34,12 @@ import org.music4j.grammar.gen.RubatoParser.NoteContext;
 import org.music4j.grammar.gen.RubatoParser.NoteRestContext;
 import org.music4j.grammar.gen.RubatoParser.NoteSingleContext;
 import org.music4j.grammar.gen.RubatoParser.OctaveContext;
+import org.music4j.grammar.gen.RubatoParser.PartContext;
 import org.music4j.grammar.gen.RubatoParser.PitchContext;
 import org.music4j.grammar.gen.RubatoParser.ScoreContext;
+import org.music4j.grammar.gen.RubatoParser.StaffBarContext;
+import org.music4j.grammar.gen.RubatoParser.StaffContext;
+import org.music4j.grammar.gen.RubatoParser.StaffEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.VoiceContext;
 import org.music4j.grammar.gen.RubatoVisitor;
 
@@ -50,7 +56,38 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
 
     @Override
     public Score visitScore(ScoreContext ctx) {
-        return Score.of();
+        Score score = Score.of();
+        for (PartContext partCtx : ctx.part()) {
+            score.add(visitPart(partCtx));
+        }
+        return score;
+    }
+
+    @Override
+    public Part visitPart(PartContext ctx) {
+        Part part = Part.of();
+        for (StaffContext staffCtx : ctx.staff()) {
+            part.add(visitStaff(staffCtx));
+        }
+        return part;
+    }
+
+    public Staff visitStaff(StaffContext ctx) {
+        return (Staff) visit(ctx);
+    }
+
+    @Override
+    public Staff visitStaffEmpty(StaffEmptyContext ctx) {
+        return Staff.of();
+    }
+
+    @Override
+    public Staff visitStaffBar(StaffBarContext ctx) {
+        Staff staff = Staff.of();
+        for(BarContext barCtx : ctx.bar()) {
+            staff.add(visitBar(barCtx));
+        }
+        return staff;
     }
 
     @Override

@@ -1,0 +1,18 @@
+
+Score {
+
+    Part {
+        Staff {
+
+        }
+    }
+
+    Part {
+        Staff {
+
+        }
+        Staff {
+
+        }
+    }
+}
