@@ -11,6 +11,7 @@ import javax.sound.midi.Transmitter;
 
 import org.music4j.Note;
 import org.music4j.Pitch;
+import org.music4j.Voice;
 
 public class Player {
 
@@ -38,6 +39,10 @@ public class Player {
         play(translator.translate(note));
     }
 
+    public void play(Voice voice) throws MidiUnavailableException {
+        play(translator.translate(voice));
+    }
+
     private void play(Sequence seq) throws MidiUnavailableException {
         // Beide öffnen und verbinden
         sequencer.open();
@@ -52,9 +57,9 @@ public class Player {
         sequencer.setTempoInBPM(120);
 
         //Start sequencer
-        sequencer.start();
         while (true) {
             try {
+                sequencer.start();
                 Thread.sleep(100);
             } catch (Exception e) {
                 // nothing
@@ -76,7 +81,7 @@ public class Player {
     public static void main(String[] args) {
         try {
             Player player = new Player();
-            player.play(Note.of("[C' E' G' Bb']4"));
+            player.play(Voice.of("C''2 E'' G'' B'3/2 C''/4 D''/4 C''2 A''2 G'' C''' G'' F'' E''"));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

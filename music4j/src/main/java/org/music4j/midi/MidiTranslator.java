@@ -1,5 +1,8 @@
 package org.music4j.midi;
 
+import java.util.Collections;
+import java.util.Map.Entry;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
@@ -10,6 +13,7 @@ import javax.sound.midi.Track;
 import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
+import org.music4j.Voice;
 
 /**
  * Class that translates music4j objects into {@linkplain Sequence Sequences}
@@ -30,9 +34,7 @@ public class MidiTranslator {
         try {
             seq = new Sequence(Sequence.PPQ, 1);
             Track track = seq.createTrack();
-            //Add the Note after one second. Otherwise it can result in the note being played back twice.
-            track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_ON, 0, pitch.asInt(), 64), 1));
-            track.add(new MidiEvent(new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch.asInt(), 0), 2));
+            addToTrack(track, Note.of(BarTime.of(4), Collections.singleton(pitch)), BarTime.of(1), 1);
             return seq;
         } catch (InvalidMidiDataException e) {
             // Cannot occur.
@@ -41,28 +43,84 @@ public class MidiTranslator {
     }
 
     /**
-     * Translate the note into a midi sequence containing the given note as a
-     * with the specified. The division of the returned sequence is {@link Sequence#PPQ}
-     * and and the resolution is set at 1
+     * Translate the note into a midi sequence containing the given note as a with
+     * the specified. The division of the returned sequence is {@link Sequence#PPQ}
      *
-     * @param pitches the pitches that are to be added to the sequence
-     * @return a sequence containing the pitches as quarter notes.
+     * @param note the note that is added to the sequence
+     * @return a sequence containing the note.
      */
     public Sequence translate(Note note) {
         try {
             BarTime duration = note.getDuration();
             Sequence seq = new Sequence(Sequence.PPQ, duration.getDenominator());
             Track track = seq.createTrack();
-            for(Pitch pitch : note) {
-                MidiMessage msgNoteOn = new ShortMessage(ShortMessage.NOTE_ON, 0, pitch.asInt(), 64);
-                track.add(new MidiEvent(msgNoteOn, duration.getDenominator()));
-                MidiMessage msgNoteOff = new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch.asInt(), 0);
-                track.add(new MidiEvent(msgNoteOff, duration.getNumerator() + duration.getDenominator()));
+            addToTrack(track, note, BarTime.of(1), duration.getDenominator());
+            return seq;
+        } catch (InvalidMidiDataException e) {
+            // Cannot occur.
+            throw new RuntimeException();
+        }
+    }
+
+    /**
+     * Translate the voice into a midi sequence containing the given voice notes.
+     * The division of the returned sequence is {@link Sequence#PPQ} and and the
+     * resolution is set at 1
+     *
+     * @param pitches the pitches that are to be added to the sequence
+     * @return a sequence containing the pitches as quarter notes.
+     */
+    public Sequence translate(Voice voice) {
+        int leastCommonMultiple = voice.keySet().stream().map(BarTime::getDenominator).reduce(1,
+                BarTime::leastCommonMultiple);
+        BarTime counter = BarTime.of(1);
+        try {
+            Sequence seq = new Sequence(Sequence.PPQ, leastCommonMultiple);
+            Track track = seq.createTrack();
+            for (Entry<BarTime, Note> e : voice.entrySet()) {
+                Note note = e.getValue();
+                addToTrack(track, note, counter, leastCommonMultiple);
+                counter = counter.plus(note.getDuration());
             }
             return seq;
         } catch (InvalidMidiDataException e) {
             // Cannot occur.
             throw new RuntimeException();
+        }
+    }
+
+    /**
+     * Adds the note to the given track at the specified counter time.
+     *
+     * @param track      the given track
+     * @param note       the note that is added to the track
+     * @param counter    the time at which the note is added
+     * @param resolution the resolution of the sequence.
+     */
+    private void addToTrack(Track track, Note note, BarTime counter, int resolution) {
+        BarTime duration = note.getDuration();
+        BarTime noteEnd = counter.plus(duration);
+        for (Pitch pitch : note) {
+            int factor = resolution / counter.getDenominator();
+            track.add(new MidiEvent(noteOn(pitch), counter.getNumerator() * factor));
+            int factorEnd = resolution / noteEnd.getDenominator();
+            track.add(new MidiEvent(noteOff(pitch), noteEnd.getNumerator() * factorEnd));
+        }
+    }
+
+    private MidiMessage noteOn(Pitch pitch) {
+        try {
+            return new ShortMessage(ShortMessage.NOTE_ON, 0, pitch.asInt(), 64);
+        } catch (InvalidMidiDataException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private MidiMessage noteOff(Pitch pitch) {
+        try {
+            return new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch.asInt(), 0);
+        } catch (InvalidMidiDataException e) {
+            throw new RuntimeException(e);
         }
     }
 }
