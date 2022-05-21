@@ -4,14 +4,13 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
+import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Transmitter;
 
+import org.music4j.Note;
 import org.music4j.Pitch;
-import org.music4j.Pitch.Alter;
-import org.music4j.Pitch.Octave;
-import org.music4j.Pitch.Step;
 
 public class Player {
 
@@ -32,13 +31,21 @@ public class Player {
     }
 
     public void play(Pitch pitch) throws MidiUnavailableException {
+        play(translator.translate(pitch));
+    }
+
+    public void play(Note note) throws MidiUnavailableException {
+        play(translator.translate(note));
+    }
+
+    private void play(Sequence seq) throws MidiUnavailableException {
         // Beide öffnen und verbinden
         sequencer.open();
         synthesizer.open();
         transmitter.setReceiver(receiver);
 
         try {
-            sequencer.setSequence(translator.translate(pitch));
+            sequencer.setSequence(seq);
         } catch (InvalidMidiDataException e1) {
             throw new RuntimeException(e1);
         }
@@ -69,7 +76,7 @@ public class Player {
     public static void main(String[] args) {
         try {
             Player player = new Player();
-            player.play(Pitch.of(Step.C, Alter.NATURAL, Octave.ONE_LINED));
+            player.play(Note.of("[C' E' G' Bb']4"));
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

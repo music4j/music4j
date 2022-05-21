@@ -1,7 +1,5 @@
 package org.music4j.midi;
 
-import java.util.List;
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
@@ -9,6 +7,8 @@ import javax.sound.midi.Sequence;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
+import org.music4j.BarTime;
+import org.music4j.Note;
 import org.music4j.Pitch;
 
 /**
@@ -41,24 +41,23 @@ public class MidiTranslator {
     }
 
     /**
-     * Translate the list of pitches into a midi sequence containing the given pitches as a
-     * quarter notes. The division of the returned sequence is {@link Sequence#PPQ}
+     * Translate the note into a midi sequence containing the given note as a
+     * with the specified. The division of the returned sequence is {@link Sequence#PPQ}
      * and and the resolution is set at 1
      *
      * @param pitches the pitches that are to be added to the sequence
      * @return a sequence containing the pitches as quarter notes.
      */
-    public Sequence translate(List<Pitch> pitches) {
+    public Sequence translate(Note note) {
         try {
-            Sequence seq = new Sequence(Sequence.PPQ, 16);
+            BarTime duration = note.getDuration();
+            Sequence seq = new Sequence(Sequence.PPQ, duration.getDenominator());
             Track track = seq.createTrack();
-            int counter = 1;
-            for(Pitch pitch : pitches) {
+            for(Pitch pitch : note) {
                 MidiMessage msgNoteOn = new ShortMessage(ShortMessage.NOTE_ON, 0, pitch.asInt(), 64);
-                track.add(new MidiEvent(msgNoteOn, counter));
-                counter += 16;
+                track.add(new MidiEvent(msgNoteOn, duration.getDenominator()));
                 MidiMessage msgNoteOff = new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch.asInt(), 0);
-                track.add(new MidiEvent(msgNoteOff, counter));
+                track.add(new MidiEvent(msgNoteOff, duration.getNumerator() + duration.getDenominator()));
             }
             return seq;
         } catch (InvalidMidiDataException e) {
