@@ -1,4 +1,4 @@
-package org.music4j.test.grammar;
+package org.music4j.test.integration;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

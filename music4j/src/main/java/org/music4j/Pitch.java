@@ -8,11 +8,21 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
+import org.music4j.grammar.RubatoInterpreter;
+import org.music4j.grammar.gen.RubatoLexer;
+import org.music4j.grammar.gen.RubatoParser;
+
 /**
  * A Pitch or Tone-Pitch consists of a {@link Step}, an {@linkplain Alter
  * Alteration} and an {@link Octave}. The definition off all those enum types
- * has been added to the Pitch class for convenience and because all those
- * type are closely tied together. Specific values can be accessed through the
+ * has been added to the Pitch class for convenience and because all those type
+ * are closely tied together. Specific values can be accessed through the
  * methods: {@link #getStep()}, {@link #getAlter()} and {@link #getOctave()}.
  */
 public final class Pitch implements Comparable<Pitch> {
@@ -27,12 +37,28 @@ public final class Pitch implements Comparable<Pitch> {
      */
     private final static Comparator<Pitch> COMPARATOR = comparingInt(Pitch::asInt);
 
+    /**
+     * The step of the pitch
+     */
     private final Step step;
 
+    /**
+     * The alteration of the pitch
+     */
     private final Alter alter;
 
+    /**
+     * The octave of the picth
+     */
     private final Octave octave;
 
+    /**
+     * Private constructor requires every field to be non null.
+     *
+     * @param step   the step
+     * @param alter  the alteration
+     * @param octave the octave
+     */
     private Pitch(Step step, Alter alter, Octave octave) {
         this.step = Objects.requireNonNull(step);
         this.alter = Objects.requireNonNull(alter);
@@ -50,6 +76,27 @@ public final class Pitch implements Comparable<Pitch> {
      */
     public static Pitch of(Step step, Alter alter, Octave octave) {
         return new Pitch(step, alter, octave);
+    }
+
+    /**
+     * Static factory method that returns a pitch equivalent to the given string representation.
+     *
+     * @param input the given string input.
+     * @return a pitch.
+     */
+    public static Pitch of(String string) {
+        try {
+            CharStream input = CharStreams.fromString(string);
+            RubatoLexer lexer = new RubatoLexer(input);
+            TokenStream tokens = new CommonTokenStream(lexer);
+            RubatoParser parser = new RubatoParser(tokens);
+            parser.setErrorHandler(new BailErrorStrategy());
+            RubatoInterpreter interpreter = new RubatoInterpreter();
+            return interpreter.visitPitch(parser.pitch());
+        } catch (ParseCancellationException e) {
+            throw new IllegalArgumentException(
+                    String.format("The given input \"%s\" cannot be processed.", string));
+        }
     }
 
     /**
@@ -145,17 +192,17 @@ public final class Pitch implements Comparable<Pitch> {
 
     private void appendOctave(StringBuilder sb) {
         int rank = octave.rank();
-        for(int i=0; i<Math.abs(rank); i++) {
-            if(Integer.signum(rank) == 1) {
+        for (int i = 0; i < Math.abs(rank); i++) {
+            if (Integer.signum(rank) == 1) {
                 sb.append("'");
-            } else if(Integer.signum(rank) == -1) {
+            } else if (Integer.signum(rank) == -1) {
                 sb.append(",");
             }
         }
     }
 
     private void appendAlter(StringBuilder sb) {
-        switch(alter) {
+        switch (alter) {
         case DOUBLE_SHARP:
             sb.append("x");
             return;

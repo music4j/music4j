@@ -20,6 +20,12 @@ import org.music4j.grammar.gen.RubatoParser;
  */
 public class ArrayScore implements Score {
 
+    /**
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
     public static Score readFile(File file) throws IOException {
         try {
             CharStream input = CharStreams.fromReader(new FileReader(file));
