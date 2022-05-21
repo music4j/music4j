@@ -3,6 +3,7 @@ package org.music4j.grammar;
 import java.util.List;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.music4j.Bar;
 import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
@@ -18,6 +19,10 @@ import org.music4j.grammar.gen.RubatoParser.AlterFlatContext;
 import org.music4j.grammar.gen.RubatoParser.AlterFlatFlatContext;
 import org.music4j.grammar.gen.RubatoParser.AlterNaturalContext;
 import org.music4j.grammar.gen.RubatoParser.AlterSharpContext;
+import org.music4j.grammar.gen.RubatoParser.BarContext;
+import org.music4j.grammar.gen.RubatoParser.BarItemContext;
+import org.music4j.grammar.gen.RubatoParser.BarItemNoteContext;
+import org.music4j.grammar.gen.RubatoParser.BarSliceContext;
 import org.music4j.grammar.gen.RubatoParser.DurationContext;
 import org.music4j.grammar.gen.RubatoParser.DurationFractionContext;
 import org.music4j.grammar.gen.RubatoParser.DurationIntegerContext;
@@ -46,6 +51,25 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     @Override
     public Score visitScore(ScoreContext ctx) {
         return Score.of();
+    }
+
+    @Override
+    public Bar visitBar(BarContext ctx) {
+        Bar bar = Bar.of();
+        for (BarSliceContext sliceCtx : ctx.barSlice()) {
+            Voice voice = Voice.of();
+            BarTime counter = BarTime.ZERO;
+            for(BarItemContext barItem : sliceCtx.barItem()) {
+                if(barItem instanceof BarItemNoteContext) {
+                    BarItemNoteContext ctxBarItemNoteCtx = (BarItemNoteContext) barItem;
+                    Note note = visitNote(ctxBarItemNoteCtx.note());
+                    voice.put(counter, note);
+                    counter = counter.plus(note.getDuration());
+                }
+            }
+            bar.add(voice);
+        }
+        return bar;
     }
 
     @Override

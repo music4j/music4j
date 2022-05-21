@@ -15,25 +15,24 @@
      'Score' '{' '}'
  ;
 
-/**
+ /**
  * A bar can have multiple baritem which are distributed to the voice and frame. All attributes are
  * routed to the same frame whereas notes are separated by the '&' sign
  */
  bar
  :
-     baritem+
+     barSlice
      (
-         '&' baritem*
+         '&' barSlice
      )*
  ;
 
- /**
- * In order for bars to have
- */
- baritem
+ barSlice
  :
-     note
+     barItem*
  ;
+
+barItem: note #barItemNote;
 
  /**
  * Rule is only used for the static factory of the Voice object.
