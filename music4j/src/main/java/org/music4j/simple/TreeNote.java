@@ -4,9 +4,18 @@ import java.util.Collection;
 import java.util.NavigableSet;
 import java.util.TreeSet;
 
+import org.antlr.v4.runtime.BailErrorStrategy;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
+import org.music4j.grammar.RubatoInterpreter;
+import org.music4j.grammar.gen.RubatoLexer;
+import org.music4j.grammar.gen.RubatoParser;
 
 /**
  * Simple implementation for the note interface based on a TreeSet.
@@ -36,6 +45,21 @@ public final class TreeNote extends ForwardingNavigableSet<Pitch> implements Not
     public TreeNote(BarTime duration, Collection<Pitch> pitches) {
         this(duration);
         addAll(pitches);
+    }
+
+    public static Note parse(String string) {
+        try {
+            CharStream input = CharStreams.fromString(string);
+            RubatoLexer lexer = new RubatoLexer(input);
+            TokenStream tokens = new CommonTokenStream(lexer);
+            RubatoParser parser = new RubatoParser(tokens);
+            parser.setErrorHandler(new BailErrorStrategy());
+            RubatoInterpreter interpreter = new RubatoInterpreter();
+            return interpreter.visitNote(parser.note());
+        } catch (ParseCancellationException e) {
+            throw new IllegalArgumentException(
+                    String.format("The given input \"%s\" cannot be processed.", string));
+        }
     }
 
     @Override

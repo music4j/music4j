@@ -50,8 +50,7 @@ public interface Note extends NavigableSet<Pitch>, Measurable {
      * @return a note.
      */
     public static Note of(String string) {
-        return null;
-//        return TreeNote.parse(string);
+        return TreeNote.parse(string);
     }
 
     /**

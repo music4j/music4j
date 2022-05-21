@@ -15,6 +15,13 @@
      'Score' '{' '}'
  ;
 
+note
+:
+    pitch duration? # noteSingle
+    | '[' pitch+ ']' duration? # noteChord
+    | 'R' duration? # noteRest
+;
+
  /**
  * A pitch consists of a mandatory step and optional alteration and octave. If the no alteration
  * and octave are given the default values are assumed. These depend on the pitch mode.

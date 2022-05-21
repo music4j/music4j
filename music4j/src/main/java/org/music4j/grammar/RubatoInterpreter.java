@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.music4j.BarTime;
+import org.music4j.Note;
 import org.music4j.Pitch;
 import org.music4j.Pitch.Alter;
 import org.music4j.Pitch.Octave;
@@ -20,6 +21,10 @@ import org.music4j.grammar.gen.RubatoParser.DurationContext;
 import org.music4j.grammar.gen.RubatoParser.DurationFractionContext;
 import org.music4j.grammar.gen.RubatoParser.DurationIntegerContext;
 import org.music4j.grammar.gen.RubatoParser.DurationInvertedIntegerContext;
+import org.music4j.grammar.gen.RubatoParser.NoteChordContext;
+import org.music4j.grammar.gen.RubatoParser.NoteContext;
+import org.music4j.grammar.gen.RubatoParser.NoteRestContext;
+import org.music4j.grammar.gen.RubatoParser.NoteSingleContext;
 import org.music4j.grammar.gen.RubatoParser.OctaveContext;
 import org.music4j.grammar.gen.RubatoParser.PitchContext;
 import org.music4j.grammar.gen.RubatoParser.ScoreContext;
@@ -34,9 +39,40 @@ import org.music4j.grammar.gen.RubatoVisitor;
  */
 public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements RubatoVisitor<Object> {
 
+    private BarTime defaultDuration = BarTime.of(1);
+
     @Override
     public Score visitScore(ScoreContext ctx) {
         return Score.of();
+    }
+
+    /**
+     * Returns a Note to a NoteContext.
+     */
+    public Note visitNote(NoteContext ctx) {
+        return (Note) visit(ctx);
+    }
+
+    @Override
+    public Note visitNoteSingle(NoteSingleContext ctx) {
+        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : defaultDuration;
+        Note note = Note.of(duration);
+        note.add(visitPitch(ctx.pitch()));
+        return note;
+    }
+
+    @Override
+    public Note visitNoteChord(NoteChordContext ctx) {
+        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : defaultDuration;
+        Note note = Note.of(duration);
+        ctx.pitch().forEach(pitchCtx -> note.add(visitPitch(pitchCtx)));
+        return note;
+    }
+
+    @Override
+    public Note visitNoteRest(NoteRestContext ctx) {
+        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : defaultDuration;
+        return Note.of(duration);
     }
 
     /**
