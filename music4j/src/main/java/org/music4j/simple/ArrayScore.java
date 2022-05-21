@@ -21,10 +21,11 @@ import org.music4j.grammar.gen.RubatoParser;
 public class ArrayScore implements Score {
 
     /**
+     * Read the file and parse the input to a Score.
      *
-     * @param file
-     * @return
-     * @throws IOException
+     * @param file the file that is parsed
+     * @return a Score
+     * @throws IOException if the file cannot be found or read.
      */
     public static Score readFile(File file) throws IOException {
         try {
@@ -36,8 +37,7 @@ public class ArrayScore implements Score {
             RubatoInterpreter interpreter = new RubatoInterpreter();
             return interpreter.visitScore(parser.score());
         } catch (ParseCancellationException e) {
-            throw new IllegalArgumentException(
-                    String.format("The given file %s cannot be processed.", file));
+            throw new IllegalArgumentException(String.format("The given file %s cannot be processed.", file));
         }
     }
 }
