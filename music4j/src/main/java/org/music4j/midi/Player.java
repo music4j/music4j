@@ -10,8 +10,9 @@ import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Transmitter;
 
 import org.music4j.Bar;
-import org.music4j.Note;
-import org.music4j.Pitch;
+import org.music4j.Part;
+import org.music4j.Score;
+import org.music4j.Staff;
 import org.music4j.Voice;
 
 public class Player {
@@ -28,20 +29,8 @@ public class Player {
         receiver = synthesizer.getReceiver();
     }
 
-    public void play(Pitch pitch) throws MidiUnavailableException {
-        play(new MidiTranslator(pitch).getSequnece());
-    }
-
-    public void play(Note note) throws MidiUnavailableException {
-        play(new MidiTranslator(note).getSequnece());
-    }
-
-    public void play(Voice voice) throws MidiUnavailableException {
-        play(new MidiTranslator(voice).getSequnece());
-    }
-
-    public void play(Bar bar) throws MidiUnavailableException {
-        play(new MidiTranslator(bar).getSequnece());
+    public void play(Score score) throws MidiUnavailableException {
+        play(new MidiTranslator(score).getSequence());
     }
 
     private void play(Sequence seq) throws MidiUnavailableException {
@@ -91,8 +80,14 @@ public class Player {
                     + "D'/2 G'/2 F'/2 G'/2 C'/2 G'/2 E'/2 G'/2"
                     + " C'/2 A'/2 F'/2 A'/2 C'/2 G'/2 E'/2 G'/2"
                     + " B/2 G'/2 D'/2 G'/2 C'/2 G'/2 E'/2 G'/2"));
+            Staff staff = Staff.of();
+            staff.add(bar);
+            Part part = Part.of();
+            part.add(staff);
+            Score score = Score.of();
+            score.add(part);
 
-            player.play(bar);
+            player.play(score);
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

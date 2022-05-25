@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.music4j.Bar;
+import org.music4j.BarTime;
 import org.music4j.Voice;
 import org.music4j.grammar.RubatoInterpreter;
 import org.music4j.grammar.gen.RubatoLexer;
@@ -32,6 +33,11 @@ public class ArrayBar extends ForwardingList<Voice> implements Bar {
         } catch (ParseCancellationException e) {
             throw new IllegalArgumentException(String.format("The given input \"%s\" cannot be processed.", string));
         }
+    }
+    
+    @Override
+    public BarTime length() {
+    	return stream().map(Voice::length).max(BarTime::compareTo).orElse(BarTime.ZERO);
     }
 
 }

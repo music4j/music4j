@@ -1,6 +1,5 @@
 package org.music4j.midi;
 
-import java.util.Collections;
 import java.util.Map.Entry;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -13,166 +12,139 @@ import javax.sound.midi.Track;
 import org.music4j.Bar;
 import org.music4j.BarTime;
 import org.music4j.Note;
+import org.music4j.Part;
 import org.music4j.Pitch;
+import org.music4j.Score;
+import org.music4j.Staff;
 import org.music4j.Voice;
 
 /**
- * Class that translates music4j objects into {@linkplain Sequence Sequences}
- * this sequence can then be played by a midi sequencer.
+ * Class that translates a {@link Score} to a {@link Sequence} 
  */
 public class MidiTranslator {
-
+	
+	/**
+	 * The resolution of the score ist the least common multiple of all parts and voices
+	 */
     private final int resolution;
-
-    private Sequence seq;
-
-    public MidiTranslator(Pitch pitch) {
-        resolution = 1;
-        try {
-            seq = new Sequence(Sequence.PPQ, resolution);
-            translate(pitch);
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public MidiTranslator(Note note) {
-        resolution = note.getDuration().getDenominator();
-        try {
-            seq = new Sequence(Sequence.PPQ, resolution);
-            translate(note);
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public MidiTranslator(Voice voice) {
-        resolution = voice.keySet().stream().map(BarTime::getDenominator).reduce(1, BarTime::leastCommonMultiple);
-        try {
-            seq = new Sequence(Sequence.PPQ, resolution);
-            translate(voice);
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public MidiTranslator(Bar bar) {
-        resolution = bar.stream().flatMap(v -> v.keySet().stream()).map(BarTime::getDenominator).reduce(1,
-                BarTime::leastCommonMultiple);
-        try {
-            seq = new Sequence(Sequence.PPQ, resolution);
-            translate(bar);
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
+    
     /**
-     * Translate a pitch into a midi sequence containing the given pitch as a
-     * quarter note. The division of the returned sequence is {@link Sequence#PPQ}
-     * and and the resolution is set at 1
-     *
-     * @param pitch the pitch that is to be added to the sequence
-     * @return a sequence containing the pitch as a single quarter note
+     * The translated Sequence
      */
-    public void translate(Pitch pitch) {
-        Track track = seq.createTrack();
-        addNoteToTrack(track, Note.of(BarTime.of(4), Collections.singleton(pitch)), BarTime.of(1));
-    }
-
+    private final Sequence seq;
+    
     /**
-     * Translate the note into a midi sequence containing the given note as a with
-     * the specified. The division of the returned sequence is {@link Sequence#PPQ}
-     *
-     * @param note the note that is added to the sequence
-     * @return a sequence containing the note.
+     * Current Track in which midi events are added.
      */
-    public void translate(Note note) {
-        Track track = seq.createTrack();
-        addNoteToTrack(track, note, BarTime.of(1));
-    }
-
+    private Track track;
+    
     /**
-     * Translate the voice into a midi sequence containing the given voice notes.
-     * The division of the returned sequence is {@link Sequence#PPQ}.
-     *
-     * @param voice the voice that is to be added to the sequence
-     * @return a sequence containing the voice.
+     * The the current counter position of the sequence.
      */
-    public void translate(Voice voice) {
-        BarTime counter = BarTime.of(1);
-        Track track = seq.createTrack();
-        addVoiceToTrack(track, voice, counter);
-    }
-
+    private BarTime counter;
+    
     /**
-     * Translate the bar into a midi sequence containing the given bar notes. The
-     * division of the returned sequence is {@link Sequence#PPQ}.
-     *
-     * @param bar the bar that is to be added to the sequence
-     * @return a sequence containing the bar.
+     * Constructor translates Score to {@link Sequence}
+     * @param pitch
      */
-    public void translate(Bar bar) {
-        for (Voice voice : bar) {
-            BarTime counter = BarTime.of(1);
-            Track track = seq.createTrack();
-            addVoiceToTrack(track, voice, counter);
-        }
+    public MidiTranslator(Score score) {
+    	resolution = calculateResolution(score);
+    	counter = BarTime.ZERO;
+		try {
+			seq = new Sequence(Sequence.PPQ, resolution);
+			translate(score);
+		} catch (InvalidMidiDataException e) {
+			//Should not happen
+			throw new RuntimeException(e);
+		}
+    }
+    
+    public Sequence getSequence() {
+    	return seq;
     }
 
-    public Sequence getSequnece() {
-        return seq;
-    }
+	private void translate(Score score) {
+		for(Part part : score) {
+			counter = BarTime.ZERO;
+			track = seq.createTrack();
+			translate(part);
+		}
+	}
 
-    /**
-     * Adds the voice to the given track att the given counter.
-     *
-     * @param track
-     * @param voice
-     * @param counter
-     * @param resolution
-     */
-    private void addVoiceToTrack(Track track, Voice voice, BarTime counter) {
-        BarTime voiceCounter = counter;
-        for (Entry<BarTime, Note> e : voice.entrySet()) {
-            Note note = e.getValue();
-            addNoteToTrack(track, note, voiceCounter);
-            voiceCounter = voiceCounter.plus(voice.nextIn(e.getKey()));
-        }
-    }
+	private void translate(Part part) {
+		for(Staff staff : part) {
+			translate(staff);
+		}
+	}
 
-    /**
-     * Adds the note to the given track at the specified counter time.
-     *
-     * @param track      the given track
-     * @param note       the note that is added to the track
-     * @param counter    the time at which the note is added
-     * @param resolution the resolution of the sequence.
-     */
-    private void addNoteToTrack(Track track, Note note, BarTime counter) {
-        BarTime duration = note.getDuration();
-        BarTime noteEnd = counter.plus(duration);
-        for (Pitch pitch : note) {
-            int factor = resolution / counter.getDenominator();
-            track.add(new MidiEvent(noteOn(pitch), counter.getNumerator() * factor));
-            int factorEnd = resolution / noteEnd.getDenominator();
-            track.add(new MidiEvent(noteOff(pitch), noteEnd.getNumerator() * factorEnd));
-        }
-    }
+	private void translate(Staff staff) {
+		for(Bar bar : staff) {
+			translate(bar);
+		}
+	}
 
-    private MidiMessage noteOn(Pitch pitch) {
-        try {
-            return new ShortMessage(ShortMessage.NOTE_ON, 0, pitch.asInt(), 64);
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private void translate(Bar bar) {
+		for(Voice voice : bar) {
+			translate(voice);
+		}
+		//After the bar is translated increase the counter.
+		counter = counter.plus(bar.length());
+	}
 
-    private MidiMessage noteOff(Pitch pitch) {
-        try {
-            return new ShortMessage(ShortMessage.NOTE_OFF, 0, pitch.asInt(), 0);
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
-    }
+	private void translate(Voice voice) {
+		for(Entry<BarTime, Note> e : voice.entrySet()) {
+			addNoteToTrack(counter.plus(e.getKey()), e.getValue());
+		}
+	}
+
+	private void addNoteToTrack(BarTime time, Note note) {
+		try {
+			BarTime noteEnd = time.plus(note.getDuration());
+			checkDivisibility(time);
+			checkDivisibility(noteEnd);
+			int timeStart = time.getNumerator() * (resolution / time.getDenominator());
+			int timeEnd = noteEnd.getNumerator() * (resolution / noteEnd.getDenominator());
+			for(Pitch p: note) {
+				//Switch note on
+				MidiMessage noteOn = new ShortMessage(ShortMessage.NOTE_ON, 0, p.asInt(), 64);
+				track.add(new MidiEvent(noteOn, timeStart));
+				//Switch note off
+				MidiMessage noteOff = new ShortMessage(ShortMessage.NOTE_OFF, 0, p.asInt(), 0);
+				track.add(new MidiEvent(noteOff, timeEnd));
+			}
+			
+		} catch (InvalidMidiDataException e) {
+			//Cannot occur
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void checkDivisibility(BarTime time) {
+		if(resolution % time.getDenominator() != 0) {
+			throw new RuntimeException("The resolution is not divisible by the denominator");
+		}
+	}
+
+	private static int calculateResolution(Score score) {
+		return score.stream().map(MidiTranslator::calculateResolution).reduce(1, BarTime::leastCommonMultiple);
+	}
+
+	private static int calculateResolution(Part part) {
+		return part.stream().map(MidiTranslator::calculateResolution).reduce(1, BarTime::leastCommonMultiple);
+	}
+	
+	private static int calculateResolution(Staff staff) {
+		return staff.stream().map(MidiTranslator::calculateResolution).reduce(1, BarTime::leastCommonMultiple);
+	}
+	
+	private static int calculateResolution(Bar bar) {
+		return bar.stream().map(MidiTranslator::calculateResolution).reduce(1, BarTime::leastCommonMultiple);
+	}
+	
+	private static int calculateResolution(Voice voice) {
+		return voice.keySet().stream().map(BarTime::getDenominator).reduce(1, BarTime::leastCommonMultiple);
+	}
+	
+	
+	
 }
