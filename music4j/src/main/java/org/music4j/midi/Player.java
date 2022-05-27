@@ -9,11 +9,7 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Transmitter;
 
-import org.music4j.Bar;
-import org.music4j.Part;
 import org.music4j.Score;
-import org.music4j.Staff;
-import org.music4j.Voice;
 
 public class Player {
 
@@ -66,32 +62,5 @@ public class Player {
 
     public boolean isRunning() {
         return sequencer.isRunning();
-    }
-
-    public static void main(String[] args) {
-        try {
-            Player player = new Player();
-
-            Bar bar = Bar.of();
-            Voice voice = Voice.of("C''2 E'' G'' B'3/2 C''/4 D''/4 C''2 A''2 G'' C''' G'' F'' E''");
-            bar.add(voice);
-            bar.add(Voice.of(
-                    "C'/2 G'/2 E'/2 G'/2 C'/2 G'/2 E'/2 G'/2 "
-                    + "D'/2 G'/2 F'/2 G'/2 C'/2 G'/2 E'/2 G'/2"
-                    + " C'/2 A'/2 F'/2 A'/2 C'/2 G'/2 E'/2 G'/2"
-                    + " B/2 G'/2 D'/2 G'/2 C'/2 G'/2 E'/2 G'/2"));
-            Staff staff = Staff.of();
-            staff.add(bar);
-            Part part = Part.of();
-            part.add(staff);
-            Score score = Score.of();
-            score.add(part);
-
-            player.play(score);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-        System.exit(0);
     }
 }

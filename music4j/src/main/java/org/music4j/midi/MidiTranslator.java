@@ -67,7 +67,6 @@ public class MidiTranslator {
 
 	private void translate(Score score) {
 		for (Part part : score) {
-			counter = BarTime.ZERO;
 			track = seq.createTrack();
 			translate(part);
 		}
@@ -75,6 +74,7 @@ public class MidiTranslator {
 
 	private void translate(Part part) {
 		for (Staff staff : part) {
+			counter = BarTime.ZERO;
 			translate(staff);
 		}
 	}
@@ -82,6 +82,8 @@ public class MidiTranslator {
 	private void translate(Staff staff) {
 		for (Bar bar : staff) {
 			translate(bar);
+			// After the bar is translated increase the counter.
+			counter = counter.plus(bar.length());
 		}
 	}
 
@@ -89,8 +91,6 @@ public class MidiTranslator {
 		for (Voice voice : bar) {
 			translate(voice);
 		}
-		// After the bar is translated increase the counter.
-		counter = counter.plus(bar.length());
 	}
 
 	private void translate(Voice voice) {
