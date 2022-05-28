@@ -107,6 +107,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     }
 
     public Staff visitStaff(StaffContext ctx) {
+        defaultOctave = Octave.SMALL;
         return (Staff) visit(ctx);
     }
 

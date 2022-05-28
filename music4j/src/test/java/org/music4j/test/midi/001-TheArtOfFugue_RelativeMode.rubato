@@ -1,0 +1,46 @@
+
+Score {
+    [MODE_TIME:relative]
+    [MODE_OCTAVE:relative]
+
+    Part {
+
+        Staff {
+            D'2 A' |
+            F D |
+            C# D1 E |
+            F5/2 G/2 F E |
+            A2 D &
+            D,1 E F G |
+            C2 A &
+            A1 A,/2 B C A F'1 |
+            G#2 A1 B &
+            R/2 B, E3/2 F/2 E D |
+            C'5/2 D/2 C Bb &
+            E,1 F# G2 |
+            A1 D2 C#1 &
+            A/2 D, F1 E2 |
+            D'/2 A C3/2 A/2 Bb &
+            D,3/2 E/2 F3/2 D/2 |
+            R/2 E A3 &
+            G3/2 G/2 F E D C#
+
+        }
+
+        Staff {
+            R4 |
+            R4 |
+            R4 |
+            R4 |
+            R4 |
+            R4 |
+            R4 |
+            R4 |
+            D2 A' |
+            F D |
+            C#2 D1 E |
+        }
+
+    }
+
+}
