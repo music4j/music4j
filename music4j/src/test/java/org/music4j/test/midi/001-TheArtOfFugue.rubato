@@ -1,6 +1,6 @@
 
 Score {
-
+    [MODE_TIME: relative]
     Part {
 
         Staff {

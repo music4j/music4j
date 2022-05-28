@@ -29,6 +29,8 @@ import org.music4j.grammar.gen.RubatoParser.DurationContext;
 import org.music4j.grammar.gen.RubatoParser.DurationFractionContext;
 import org.music4j.grammar.gen.RubatoParser.DurationIntegerContext;
 import org.music4j.grammar.gen.RubatoParser.DurationInvertedIntegerContext;
+import org.music4j.grammar.gen.RubatoParser.ModeTimeAbsoluteContext;
+import org.music4j.grammar.gen.RubatoParser.ModeTimeRelativeContext;
 import org.music4j.grammar.gen.RubatoParser.NoteChordContext;
 import org.music4j.grammar.gen.RubatoParser.NoteContext;
 import org.music4j.grammar.gen.RubatoParser.NoteRestContext;
@@ -54,9 +56,17 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
 
     private BarTime defaultDuration = BarTime.of(1);
 
+    private boolean isInRelativeTimeMode = false;
+
     @Override
     public Score visitScore(ScoreContext ctx) {
+        //Create score
         Score score = Score.of();
+
+        //Visit score Settings rules
+        ctx.scoreSettings().forEach(this::visit);
+
+        //Parse score
         for (PartContext partCtx : ctx.part()) {
             score.add(visitPart(partCtx));
         }
@@ -125,7 +135,11 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
      * Returns a Note to a NoteContext.
      */
     public Note visitNote(NoteContext ctx) {
-        return (Note) visit(ctx);
+        Note note = (Note) visit(ctx);
+        if(isInRelativeTimeMode) {
+            defaultDuration = note.getDuration();
+        }
+        return note;
     }
 
     @Override
@@ -235,4 +249,15 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
         return BarTime.of(Integer.parseInt(num.getText()));
     }
 
+    @Override
+    public Object visitModeTimeAbsolute(ModeTimeAbsoluteContext ctx) {
+        isInRelativeTimeMode = false;
+        return super.visitModeTimeAbsolute(ctx);
+    }
+
+    @Override
+    public Object visitModeTimeRelative(ModeTimeRelativeContext ctx) {
+        isInRelativeTimeMode = true;
+        return super.visitModeTimeRelative(ctx);
+    }
 }

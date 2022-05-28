@@ -12,7 +12,7 @@
  */
  score
  :
-     'Score' '{' part* '}'
+     'Score' '{' scoreSettings* part* '}'
  ;
 
  /**
@@ -109,6 +109,16 @@
      | INT # durationInteger
  ;
 
+ scoreSettings
+ :
+     '[' modeTime ']'
+ ;
+
+ modeTime
+ :
+     'MODE_TIME' ':' 'absolute' # modeTimeAbsolute
+     | 'MODE_TIME' ':' 'relative' # modeTimeRelative
+ ;
  /*
  * ---------------------------------------------Lexer rules---------------------------------------------
  */

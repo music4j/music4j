@@ -91,4 +91,26 @@ class IntegrationTest {
         assertEquals(Voice.of("G' A' B' C''"), second.get(0));
         assertEquals(Voice.of("G4"), second.get(1));
     }
+
+    /**
+     * Score with two two bars
+     */
+    @Test
+    void readWithRelativeTimeMode() throws IOException, URISyntaxException {
+        URL filePath = getClass().getResource("006-RelativeTimeMode.rubato");
+        File file = new File(filePath.toURI());
+        Score score = Score.readFile(file);
+        Part part = score.get(0);
+        Staff staff = part.get(0);
+
+        //First bar
+        Bar first = staff.get(0);
+        assertEquals(Voice.of("C' D' E' F'"), first.get(0));
+        assertEquals(Voice.of("E'/2 G'/2 F'/2 G'/2 C'' B'"), first.get(1));
+
+        //Second bar
+        Bar second = staff.get(1);
+        assertEquals(Voice.of("G' A' B' C''"), second.get(0));
+        assertEquals(Voice.of("G4"), second.get(1));
+    }
 }
