@@ -1,0 +1,17 @@
+
+Score {
+    [MODE_OCTAVE: relative]
+
+    Part {
+
+        Staff {
+            C' D C E |
+            C F C G'|
+            C, A' C, B' |
+            C4 |
+            G''2 F,,2
+        }
+
+    }
+
+}

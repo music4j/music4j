@@ -40,4 +40,19 @@ public class ArrayScore extends ForwardingList<Part> implements Score {
                     String.format("The given file %s cannot be processed.", file));
         }
     }
+
+    public static Score parse(String s) {
+        try {
+            CharStream input = CharStreams.fromString(s);
+            RubatoLexer lexer = new RubatoLexer(input);
+            TokenStream tokens = new CommonTokenStream(lexer);
+            RubatoParser parser = new RubatoParser(tokens);
+            parser.setErrorHandler(new BailErrorStrategy());
+            RubatoInterpreter interpreter = new RubatoInterpreter();
+            return interpreter.visitScore(parser.score());
+        } catch (ParseCancellationException e) {
+            throw new IllegalArgumentException(
+                    String.format("The given input %s cannot be processed.", s));
+        }
+    }
 }

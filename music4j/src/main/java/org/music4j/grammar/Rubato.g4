@@ -62,7 +62,7 @@
  */
  voice
  :
-     note+
+     note*
  ;
 
  note
@@ -111,13 +111,23 @@
 
  scoreSettings
  :
-     '[' modeTime ']'
+     '['
+     (
+         modeTime
+         | modeOctave
+     ) ']'
  ;
 
  modeTime
  :
      'MODE_TIME' ':' 'absolute' # modeTimeAbsolute
      | 'MODE_TIME' ':' 'relative' # modeTimeRelative
+ ;
+
+ modeOctave
+ :
+     'MODE_OCTAVE' ':' 'absolute' # modeOctaveAbsolute
+     | 'MODE_OCTAVE' ':' 'relative' # modeOctaveRelative
  ;
  /*
  * ---------------------------------------------Lexer rules---------------------------------------------

@@ -93,7 +93,7 @@ class IntegrationTest {
     }
 
     /**
-     * Score with two two bars
+     * Score with relative time mode parsing
      */
     @Test
     void readWithRelativeTimeMode() throws IOException, URISyntaxException {
@@ -112,5 +112,17 @@ class IntegrationTest {
         Bar second = staff.get(1);
         assertEquals(Voice.of("G' A' B' C''"), second.get(0));
         assertEquals(Voice.of("G4"), second.get(1));
+    }
+
+    /**
+     * Score with relative time mode parsing
+     */
+    @Test
+    void readWithRelativeOctaveMode() throws IOException, URISyntaxException {
+        URL filePath = getClass().getResource("007-RelativeOctaveMode.rubato");
+        File file = new File(filePath.toURI());
+        Score actual = Score.readFile(file);
+        Score expected = Score.of("Score{ Part { Staff { C' D' C' E' | C' F' C' G' | C' A' C' B' | C''4 | G'''2 F'2 }}}");
+        assertEquals(expected, actual);
     }
 }

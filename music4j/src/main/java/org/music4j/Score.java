@@ -22,6 +22,15 @@ public interface Score extends List<Part>{
     }
 
     /**
+     * Returns an empty Score.
+     *
+     * @return an empty Score.
+     */
+    static Score of(String input) {
+        return ArrayScore.parse(input);
+    }
+
+    /**
      * Static factory that parses the given file input to a score according to the
      * Rubato grammar.
      *

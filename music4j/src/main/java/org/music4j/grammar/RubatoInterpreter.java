@@ -29,6 +29,8 @@ import org.music4j.grammar.gen.RubatoParser.DurationContext;
 import org.music4j.grammar.gen.RubatoParser.DurationFractionContext;
 import org.music4j.grammar.gen.RubatoParser.DurationIntegerContext;
 import org.music4j.grammar.gen.RubatoParser.DurationInvertedIntegerContext;
+import org.music4j.grammar.gen.RubatoParser.ModeOctaveAbsoluteContext;
+import org.music4j.grammar.gen.RubatoParser.ModeOctaveRelativeContext;
 import org.music4j.grammar.gen.RubatoParser.ModeTimeAbsoluteContext;
 import org.music4j.grammar.gen.RubatoParser.ModeTimeRelativeContext;
 import org.music4j.grammar.gen.RubatoParser.NoteChordContext;
@@ -54,19 +56,41 @@ import org.music4j.grammar.gen.RubatoVisitor;
  */
 public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements RubatoVisitor<Object> {
 
+    /**
+     * Default duration that is used when none is provided.
+     */
     private BarTime defaultDuration = BarTime.of(1);
 
+    /**
+     * Default octave that is used when none is provided
+     */
+    private Octave defaultOctave = Octave.SMALL;
+
+    /**
+     * Stores the previous entered step.
+     */
+    private Step previous = Step.C;
+
+    /**
+     * In relative time mode the default time is set to the last time that is
+     * specified.
+     */
     private boolean isInRelativeTimeMode = false;
+
+    /**
+     * In relative octave mode all pitches are determined relative to one another.
+     */
+    private boolean isInRelativeOctaveMode = false;
 
     @Override
     public Score visitScore(ScoreContext ctx) {
-        //Create score
+        // Create score
         Score score = Score.of();
 
-        //Visit score Settings rules
+        // Visit score Settings rules
         ctx.scoreSettings().forEach(this::visit);
 
-        //Parse score
+        // Parse score
         for (PartContext partCtx : ctx.part()) {
             score.add(visitPart(partCtx));
         }
@@ -94,7 +118,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     @Override
     public Staff visitStaffBar(StaffBarContext ctx) {
         Staff staff = Staff.of();
-        for(BarContext barCtx : ctx.bar()) {
+        for (BarContext barCtx : ctx.bar()) {
             staff.add(visitBar(barCtx));
         }
         return staff;
@@ -106,8 +130,8 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
         for (BarSliceContext sliceCtx : ctx.barSlice()) {
             Voice voice = Voice.of();
             BarTime counter = BarTime.ZERO;
-            for(BarItemContext barItem : sliceCtx.barItem()) {
-                if(barItem instanceof BarItemNoteContext) {
+            for (BarItemContext barItem : sliceCtx.barItem()) {
+                if (barItem instanceof BarItemNoteContext) {
                     BarItemNoteContext ctxBarItemNoteCtx = (BarItemNoteContext) barItem;
                     Note note = visitNote(ctxBarItemNoteCtx.note());
                     voice.put(counter, note);
@@ -136,7 +160,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
      */
     public Note visitNote(NoteContext ctx) {
         Note note = (Note) visit(ctx);
-        if(isInRelativeTimeMode) {
+        if (isInRelativeTimeMode) {
             defaultDuration = note.getDuration();
         }
         return note;
@@ -174,10 +198,16 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
         OctaveContext octaveNode = ctx.octave();
 
         Step step = Step.valueOf(stepNode.getText());
-        Octave octave;
-        Alter alter;
-        octave = octaveNode != null ? visitOctave(octaveNode) : Octave.SMALL;
-        alter = alterNode != null ? visitAlter(alterNode) : Alter.NATURAL;
+        Octave octave = octaveNode != null ? visitOctave(octaveNode) : Octave.SMALL;
+        Alter alter = alterNode != null ? visitAlter(alterNode) : Alter.NATURAL;
+
+        // If the parser is in relative mode the octave must be adjusted
+        if (isInRelativeOctaveMode) {
+            int octaveShift = step.rank() - previous.rank() > 3 ? -1 : step.rank() - previous.rank() < -3 ? 1 : 0;
+            octave = Octave.valueOf(octaveShift + octave.rank() + defaultOctave.rank());
+            defaultOctave = octave;
+            previous = step;
+        }
 
         return Pitch.of(step, alter, octave);
     }
@@ -259,5 +289,17 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     public Object visitModeTimeRelative(ModeTimeRelativeContext ctx) {
         isInRelativeTimeMode = true;
         return super.visitModeTimeRelative(ctx);
+    }
+
+    @Override
+    public Object visitModeOctaveAbsolute(ModeOctaveAbsoluteContext ctx) {
+        isInRelativeOctaveMode = false;
+        return super.visitModeOctaveAbsolute(ctx);
+    }
+
+    @Override
+    public Object visitModeOctaveRelative(ModeOctaveRelativeContext ctx) {
+        isInRelativeOctaveMode = true;
+        return super.visitModeOctaveRelative(ctx);
     }
 }
