@@ -11,14 +11,14 @@ import javax.sound.midi.Transmitter;
 
 import org.music4j.Score;
 
-public class Player {
+public class MidiPlayer {
 
     private final Sequencer sequencer;
     private final Transmitter transmitter;
     private final Synthesizer synthesizer;
     private final Receiver receiver;
 
-    public Player() throws MidiUnavailableException {
+    public MidiPlayer() throws MidiUnavailableException {
         sequencer = MidiSystem.getSequencer();
         transmitter = sequencer.getTransmitter();
         synthesizer = MidiSystem.getSynthesizer();

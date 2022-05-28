@@ -12,7 +12,7 @@ public class RubatoPlayer {
     public static void main(String[] args) throws IOException, MidiUnavailableException {
         File rubatoFile = new File(args[0]);
         Score score = Score.readFile(rubatoFile);
-        Player player = new Player();
+        MidiPlayer player = new MidiPlayer();
         player.play(score);
     }
 }
