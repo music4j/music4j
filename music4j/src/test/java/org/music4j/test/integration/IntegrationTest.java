@@ -75,7 +75,7 @@ class IntegrationTest {
      */
     @Test
     void readBarWithTwoVoices() throws IOException, URISyntaxException {
-        URL filePath = getClass().getResource("006-MultipleVoices.rubato");
+        URL filePath = getClass().getResource("005-MultipleVoices.rubato");
         File file = new File(filePath.toURI());
         Score score = Score.readFile(file);
         Part part = score.get(0);

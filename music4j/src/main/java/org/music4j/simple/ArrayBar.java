@@ -34,10 +34,10 @@ public class ArrayBar extends ForwardingList<Voice> implements Bar {
             throw new IllegalArgumentException(String.format("The given input \"%s\" cannot be processed.", string));
         }
     }
-    
+
     @Override
     public BarTime length() {
-    	return stream().map(Voice::length).max(BarTime::compareTo).orElse(BarTime.ZERO);
+        return stream().map(Voice::length).max(BarTime::compareTo).orElse(BarTime.ZERO);
     }
 
 }

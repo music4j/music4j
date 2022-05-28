@@ -12,30 +12,30 @@ import org.music4j.simple.ArrayBar;
  */
 public interface Bar extends List<Voice> {
 
-	/**
-	 * Static factory for the bar interface. Returns an empty bar.
-	 *
-	 * @return an empty bar.
-	 */
-	static Bar of() {
-		return new ArrayBar();
-	}
+    /**
+     * Static factory for the bar interface. Returns an empty bar.
+     *
+     * @return an empty bar.
+     */
+    static Bar of() {
+        return new ArrayBar();
+    }
 
-	/**
-	 * Static factory for the bar interface. Returns an Bar equivalent to the given
-	 * string according to the Rubato grammar.
-	 *
-	 * @param string the given input
-	 * @throws IllegalArgumentException if the input cannot be processed
-	 */
-	static Bar of(String string) {
-		return ArrayBar.parse(string);
-	}
+    /**
+     * Static factory for the bar interface. Returns an Bar equivalent to the given
+     * string according to the Rubato grammar.
+     *
+     * @param string the given input
+     * @throws IllegalArgumentException if the input cannot be processed
+     */
+    static Bar of(String string) {
+        return ArrayBar.parse(string);
+    }
 
-	/**
-	 * Returns the length of the bar.
-	 * 
-	 * @return the length of the bar.
-	 */
-	BarTime length();
+    /**
+     * Returns the length of the bar.
+     *
+     * @return the length of the bar.
+     */
+    BarTime length();
 }
