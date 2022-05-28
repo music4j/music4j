@@ -3,7 +3,7 @@ package org.music4j;
 import java.util.Collection;
 import java.util.NavigableSet;
 
-import org.music4j.simple.TreeNote;
+import org.music4j.simple.TreeSetNote;
 
 /**
  * A Note is a Set of {@linkplain Pitch Pitches}. Notes are the main part in any
@@ -28,7 +28,7 @@ public interface Note extends NavigableSet<Pitch>, Measurable {
      * @return a rest of the specified duration.
      */
     static Note of(BarTime duration) {
-        return new TreeNote(duration);
+        return new TreeSetNote(duration);
     }
 
     /**
@@ -40,7 +40,7 @@ public interface Note extends NavigableSet<Pitch>, Measurable {
      * @return a note of the specified duration with the given pitches.
      */
     static Note of(BarTime duration, Collection<Pitch> pitches) {
-        return new TreeNote(duration, pitches);
+        return new TreeSetNote(duration, pitches);
     }
 
     /**
@@ -50,7 +50,7 @@ public interface Note extends NavigableSet<Pitch>, Measurable {
      * @return a note.
      */
     public static Note of(String string) {
-        return TreeNote.parse(string);
+        return TreeSetNote.parse(string);
     }
 
     /**

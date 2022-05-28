@@ -2,7 +2,7 @@ package org.music4j;
 
 import java.util.List;
 
-import org.music4j.simple.ArrayPart;
+import org.music4j.simple.ArrayListPart;
 
 /**
  * A Part is a ordered Collection of {@linkplain Staff Staffs}
@@ -15,7 +15,7 @@ public interface Part extends List<Staff> {
      * @return an empty part.
      */
     static Part of() {
-        return new ArrayPart();
+        return new ArrayListPart();
     }
 
 }

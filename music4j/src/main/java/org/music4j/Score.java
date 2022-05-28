@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.music4j.simple.ArrayScore;
+import org.music4j.simple.ArrayListScore;
 
 /**
  * A Score is an ordered list of Parts. This interface defines a root object for
@@ -18,7 +18,7 @@ public interface Score extends List<Part>{
      * @return an empty Score.
      */
     static Score of() {
-        return new ArrayScore();
+        return new ArrayListScore();
     }
 
     /**
@@ -27,7 +27,7 @@ public interface Score extends List<Part>{
      * @return an empty Score.
      */
     static Score of(String input) {
-        return ArrayScore.parse(input);
+        return ArrayListScore.parse(input);
     }
 
     /**
@@ -40,7 +40,7 @@ public interface Score extends List<Part>{
      * @throws IOException              if the file cannot be found.
      */
     static Score readFile(File file) throws IOException {
-        return ArrayScore.readFile(file);
+        return ArrayListScore.readFile(file);
     }
 
 }

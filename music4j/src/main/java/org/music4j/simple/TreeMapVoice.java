@@ -22,17 +22,17 @@ import org.music4j.grammar.RubatoInterpreter;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 
-public final class TreeVoice extends ForwardingNavigableMap<BarTime, Note> implements Voice {
+public final class TreeMapVoice extends ForwardingNavigableMap<BarTime, Note> implements Voice {
 
-    private TreeVoice(NavigableMap<BarTime, Note> map) {
+    private TreeMapVoice(NavigableMap<BarTime, Note> map) {
         super(map);
     }
 
-    public TreeVoice() {
+    public TreeMapVoice() {
         super(new TreeMap<>());
     }
 
-    public TreeVoice(Map<BarTime, Note> voice) {
+    public TreeMapVoice(Map<BarTime, Note> voice) {
         this();
         putAll(voice);
     }
@@ -106,22 +106,22 @@ public final class TreeVoice extends ForwardingNavigableMap<BarTime, Note> imple
 
     @Override
     public Voice subMap(BarTime fromKey, boolean fromInclusive, BarTime toKey, boolean toInclusive) {
-        return new TreeVoice(super.subMap(fromKey, fromInclusive, toKey, toInclusive));
+        return new TreeMapVoice(super.subMap(fromKey, fromInclusive, toKey, toInclusive));
     }
 
     @Override
     public Voice descendingMap() {
-        return new TreeVoice(super.descendingMap());
+        return new TreeMapVoice(super.descendingMap());
     }
 
     @Override
     public Voice headMap(BarTime toKey, boolean inclusive) {
-        return new TreeVoice(super.headMap(toKey, inclusive));
+        return new TreeMapVoice(super.headMap(toKey, inclusive));
     }
 
     @Override
     public Voice tailMap(BarTime fromKey, boolean inclusive) {
-        return new TreeVoice(super.tailMap(fromKey, inclusive));
+        return new TreeMapVoice(super.tailMap(fromKey, inclusive));
     }
 
     @Override

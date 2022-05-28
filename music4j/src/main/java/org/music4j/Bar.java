@@ -2,7 +2,7 @@ package org.music4j;
 
 import java.util.List;
 
-import org.music4j.simple.ArrayBar;
+import org.music4j.simple.ArrayListBar;
 
 /**
  * A Bar is a ordered list of {@linkplain Voice Voices} and an {@link Frame}. We
@@ -18,7 +18,7 @@ public interface Bar extends List<Voice> {
      * @return an empty bar.
      */
     static Bar of() {
-        return new ArrayBar();
+        return new ArrayListBar();
     }
 
     /**
@@ -29,7 +29,7 @@ public interface Bar extends List<Voice> {
      * @throws IllegalArgumentException if the input cannot be processed
      */
     static Bar of(String string) {
-        return ArrayBar.parse(string);
+        return ArrayListBar.parse(string);
     }
 
     /**

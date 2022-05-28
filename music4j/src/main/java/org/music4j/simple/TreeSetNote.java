@@ -20,7 +20,7 @@ import org.music4j.grammar.gen.RubatoParser;
 /**
  * Simple implementation for the note interface based on a TreeSet.
  */
-public final class TreeNote extends ForwardingNavigableSet<Pitch> implements Note {
+public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements Note {
 
     private final BarTime duration;
 
@@ -33,16 +33,16 @@ public final class TreeNote extends ForwardingNavigableSet<Pitch> implements Not
      * constructor does not create a new TreeSet but Forwards an existing
      * NavigableSet.
      */
-    private TreeNote(NavigableSet<Pitch> set, BarTime duration) {
+    private TreeSetNote(NavigableSet<Pitch> set, BarTime duration) {
         super(set);
         this.duration = duration;
     }
 
-    public TreeNote(BarTime duration) {
+    public TreeSetNote(BarTime duration) {
         this(new TreeSet<>(), duration);
     }
 
-    public TreeNote(BarTime duration, Collection<Pitch> pitches) {
+    public TreeSetNote(BarTime duration, Collection<Pitch> pitches) {
         this(duration);
         addAll(pitches);
     }
@@ -89,7 +89,7 @@ public final class TreeNote extends ForwardingNavigableSet<Pitch> implements Not
 
     @Override
     public Note descendingSet() {
-        Note note = new TreeNote(super.descendingSet(), duration);
+        Note note = new TreeSetNote(super.descendingSet(), duration);
         note.setType(type);
         note.setDots(dots);
         return note;
@@ -97,7 +97,7 @@ public final class TreeNote extends ForwardingNavigableSet<Pitch> implements Not
 
     @Override
     public Note headSet(Pitch toElement, boolean inclusive) {
-        Note note = new TreeNote(super.headSet(toElement, inclusive), duration);
+        Note note = new TreeSetNote(super.headSet(toElement, inclusive), duration);
         note.setType(type);
         note.setDots(dots);
         return note;
@@ -105,7 +105,7 @@ public final class TreeNote extends ForwardingNavigableSet<Pitch> implements Not
 
     @Override
     public Note tailSet(Pitch fromElement, boolean inclusive) {
-        Note note = new TreeNote(super.tailSet(fromElement, inclusive), duration);
+        Note note = new TreeSetNote(super.tailSet(fromElement, inclusive), duration);
         note.setType(type);
         note.setDots(dots);
         return note;
@@ -113,7 +113,7 @@ public final class TreeNote extends ForwardingNavigableSet<Pitch> implements Not
 
     @Override
     public Note subSet(Pitch fromElement, boolean fromInclusive, Pitch toElement, boolean toInclusive) {
-        Note note = new TreeNote(super.subSet(fromElement, fromInclusive, toElement, toInclusive), duration);
+        Note note = new TreeSetNote(super.subSet(fromElement, fromInclusive, toElement, toInclusive), duration);
         note.setType(type);
         note.setDots(dots);
         return note;

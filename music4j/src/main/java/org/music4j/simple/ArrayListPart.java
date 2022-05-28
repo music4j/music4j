@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import org.music4j.Part;
 import org.music4j.Staff;
 
-public class ArrayPart extends ForwardingList<Staff> implements Part {
+public class ArrayListPart extends ForwardingList<Staff> implements Part {
 
-    public ArrayPart() {
+    public ArrayListPart() {
         super(new ArrayList<>());
     }
 }

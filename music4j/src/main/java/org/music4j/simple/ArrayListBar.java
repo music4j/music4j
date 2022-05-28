@@ -15,9 +15,9 @@ import org.music4j.grammar.RubatoInterpreter;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 
-public class ArrayBar extends ForwardingList<Voice> implements Bar {
+public class ArrayListBar extends ForwardingList<Voice> implements Bar {
 
-    public ArrayBar() {
+    public ArrayListBar() {
         super(new ArrayList<>());
     }
 

@@ -2,7 +2,7 @@ package org.music4j;
 
 import java.util.List;
 
-import org.music4j.simple.ArrayStaff;
+import org.music4j.simple.ArrayListStaff;
 
 /**
  * A Staff is a ordered collection of {@linkplain Bar Bars}.
@@ -15,7 +15,7 @@ public interface Staff extends List<Bar> {
      * @return an empty staff.
      */
     static Staff of() {
-        return new ArrayStaff();
+        return new ArrayListStaff();
     }
 
 }

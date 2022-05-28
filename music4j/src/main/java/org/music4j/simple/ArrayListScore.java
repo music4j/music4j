@@ -20,9 +20,9 @@ import org.music4j.grammar.gen.RubatoParser;
 /**
  * Simple implementation of a Score based on an ArrayList.
  */
-public class ArrayScore extends ForwardingList<Part> implements Score {
+public class ArrayListScore extends ForwardingList<Part> implements Score {
 
-    public ArrayScore() {
+    public ArrayListScore() {
         super(new ArrayList<>());
     }
 

@@ -4,7 +4,7 @@ import java.util.Map;
 import java.util.NavigableMap;
 import java.util.SortedMap;
 
-import org.music4j.simple.TreeVoice;
+import org.music4j.simple.TreeMapVoice;
 
 /**
  * A Voice is a NavigableMap which maps {@linkplain BarTime BarTimes} to
@@ -40,7 +40,7 @@ public interface Voice extends NavigableMap<BarTime, Note> {
      * @return an empty voice.
      */
     static Voice of() {
-        return new TreeVoice();
+        return new TreeMapVoice();
     }
 
     /**
@@ -54,7 +54,7 @@ public interface Voice extends NavigableMap<BarTime, Note> {
      *                            conditions placed on a voice.
      */
     static Voice of(Map<BarTime, Note> voice) {
-        return new TreeVoice(voice);
+        return new TreeMapVoice(voice);
     }
 
     /**
@@ -65,7 +65,7 @@ public interface Voice extends NavigableMap<BarTime, Note> {
      * @throws IllegalArgumentException if the input cannot be processed.
      */
     static Voice of(String string) {
-        return TreeVoice.parse(string);
+        return TreeMapVoice.parse(string);
     }
 
     /**
