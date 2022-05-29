@@ -66,11 +66,6 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     private final Container<ParserToken> container;
 
     /**
-     * Default octave that is used when none is provided
-     */
-    private Octave defaultOctave = Octave.SMALL;
-
-    /**
      * Stores the previous entered step.
      */
     private Step previous = Step.C;
@@ -89,6 +84,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     public RubatoInterpreter() {
         container = new Container<>();
         container.add(new DefaultDuration());
+        container.add(new DefaultOctave());
     }
 
     private <E, T extends Supplier<E> & ParserToken> E get(Class<T> key) {
@@ -128,7 +124,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     }
 
     public Staff visitStaff(StaffContext ctx) {
-        defaultOctave = Octave.SMALL;
+        set(DefaultOctave.class, Octave.SMALL);
         return (Staff) visit(ctx);
     }
 
@@ -226,8 +222,8 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
         // If the parser is in relative mode the octave must be adjusted
         if (isInRelativeOctaveMode) {
             int octaveShift = step.rank() - previous.rank() > 3 ? -1 : step.rank() - previous.rank() < -3 ? 1 : 0;
-            octave = Octave.valueOf(octaveShift + octave.rank() + defaultOctave.rank());
-            defaultOctave = octave;
+            octave = Octave.valueOf(octaveShift + octave.rank() + get(DefaultOctave.class).rank());
+            set(DefaultOctave.class, octave);
             previous = step;
         }
 
