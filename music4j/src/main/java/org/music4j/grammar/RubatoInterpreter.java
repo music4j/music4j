@@ -1,6 +1,8 @@
 package org.music4j.grammar;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.music4j.Bar;
@@ -46,6 +48,8 @@ import org.music4j.grammar.gen.RubatoParser.StaffContext;
 import org.music4j.grammar.gen.RubatoParser.StaffEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.VoiceContext;
 import org.music4j.grammar.gen.RubatoVisitor;
+import org.music4j.utils.Container;
+
 
 /**
  * Implementation of a {@link RubatoVisitor} which parses rubato files to
@@ -57,9 +61,9 @@ import org.music4j.grammar.gen.RubatoVisitor;
 public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements RubatoVisitor<Object> {
 
     /**
-     * Default duration that is used when none is provided.
+     * Container stores ParserToken.
      */
-    private BarTime defaultDuration = BarTime.of(1);
+    private final Container<ParserToken> container;
 
     /**
      * Default octave that is used when none is provided
@@ -81,6 +85,23 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
      * In relative octave mode all pitches are determined relative to one another.
      */
     private boolean isInRelativeOctaveMode = false;
+
+    public RubatoInterpreter() {
+        container = new Container<>();
+        container.add(new DefaultDuration());
+    }
+
+    private <E, T extends Supplier<E> & ParserToken> E get(Class<T> key) {
+        T token = container.get(key);
+        return token == null ? null : token.get();
+    }
+
+    private <E, T extends Consumer<E> & ParserToken> void set(Class<T> key, E value) {
+        T token = container.get(key);
+        if(token != null) {
+            token.accept(value);
+        }
+    }
 
     @Override
     public Score visitScore(ScoreContext ctx) {
@@ -162,14 +183,14 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     public Note visitNote(NoteContext ctx) {
         Note note = (Note) visit(ctx);
         if (isInRelativeTimeMode) {
-            defaultDuration = note.getDuration();
+            set(DefaultDuration.class, note.getDuration());
         }
         return note;
     }
 
     @Override
     public Note visitNoteSingle(NoteSingleContext ctx) {
-        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : defaultDuration;
+        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : get(DefaultDuration.class);
         Note note = Note.of(duration);
         note.add(visitPitch(ctx.pitch()));
         return note;
@@ -177,7 +198,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
 
     @Override
     public Note visitNoteChord(NoteChordContext ctx) {
-        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : defaultDuration;
+        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : get(DefaultDuration.class);
         Note note = Note.of(duration);
         ctx.pitch().forEach(pitchCtx -> note.add(visitPitch(pitchCtx)));
         return note;
@@ -185,7 +206,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
 
     @Override
     public Note visitNoteRest(NoteRestContext ctx) {
-        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : defaultDuration;
+        BarTime duration = ctx.duration() != null ? visitDuration(ctx.duration()) : get(DefaultDuration.class);
         return Note.of(duration);
     }
 
