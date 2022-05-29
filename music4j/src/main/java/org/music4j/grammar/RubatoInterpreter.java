@@ -50,7 +50,6 @@ import org.music4j.grammar.gen.RubatoParser.VoiceContext;
 import org.music4j.grammar.gen.RubatoVisitor;
 import org.music4j.utils.Container;
 
-
 /**
  * Implementation of a {@link RubatoVisitor} which parses rubato files to
  * appropriate java objects. Note that the generic type is Object since there is
@@ -65,26 +64,13 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
      */
     private final Container<ParserToken> container;
 
-    /**
-     * Stores the previous entered step.
-     */
-    private Step previous = Step.C;
-
-    /**
-     * In relative time mode the default time is set to the last time that is
-     * specified.
-     */
-    private boolean isInRelativeTimeMode = false;
-
-    /**
-     * In relative octave mode all pitches are determined relative to one another.
-     */
-    private boolean isInRelativeOctaveMode = false;
-
     public RubatoInterpreter() {
         container = new Container<>();
         container.add(new DefaultDuration());
         container.add(new DefaultOctave());
+        container.add(new RelativeTimeMode());
+        container.add(new RelativeOctaveMode());
+        container.add(new PreviousStep());
     }
 
     private <E, T extends Supplier<E> & ParserToken> E get(Class<T> key) {
@@ -94,7 +80,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
 
     private <E, T extends Consumer<E> & ParserToken> void set(Class<T> key, E value) {
         T token = container.get(key);
-        if(token != null) {
+        if (token != null) {
             token.accept(value);
         }
     }
@@ -178,7 +164,7 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
      */
     public Note visitNote(NoteContext ctx) {
         Note note = (Note) visit(ctx);
-        if (isInRelativeTimeMode) {
+        if (get(RelativeTimeMode.class)) {
             set(DefaultDuration.class, note.getDuration());
         }
         return note;
@@ -220,11 +206,12 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
         Alter alter = alterNode != null ? visitAlter(alterNode) : Alter.NATURAL;
 
         // If the parser is in relative mode the octave must be adjusted
-        if (isInRelativeOctaveMode) {
-            int octaveShift = step.rank() - previous.rank() > 3 ? -1 : step.rank() - previous.rank() < -3 ? 1 : 0;
+        if (get(RelativeOctaveMode.class)) {
+            int octaveShift = step.rank() - get(PreviousStep.class).rank() > 3 ? -1
+                    : step.rank() - get(PreviousStep.class).rank() < -3 ? 1 : 0;
             octave = Octave.valueOf(octaveShift + octave.rank() + get(DefaultOctave.class).rank());
             set(DefaultOctave.class, octave);
-            previous = step;
+            set(PreviousStep.class, step);
         }
 
         return Pitch.of(step, alter, octave);
@@ -299,25 +286,25 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
 
     @Override
     public Object visitModeTimeAbsolute(ModeTimeAbsoluteContext ctx) {
-        isInRelativeTimeMode = false;
+        set(RelativeTimeMode.class, false);
         return super.visitModeTimeAbsolute(ctx);
     }
 
     @Override
     public Object visitModeTimeRelative(ModeTimeRelativeContext ctx) {
-        isInRelativeTimeMode = true;
+        set(RelativeTimeMode.class, true);
         return super.visitModeTimeRelative(ctx);
     }
 
     @Override
     public Object visitModeOctaveAbsolute(ModeOctaveAbsoluteContext ctx) {
-        isInRelativeOctaveMode = false;
+        set(RelativeOctaveMode.class, false);
         return super.visitModeOctaveAbsolute(ctx);
     }
 
     @Override
     public Object visitModeOctaveRelative(ModeOctaveRelativeContext ctx) {
-        isInRelativeOctaveMode = true;
+        set(RelativeOctaveMode.class, true);
         return super.visitModeOctaveRelative(ctx);
     }
 }
