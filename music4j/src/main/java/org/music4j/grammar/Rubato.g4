@@ -67,8 +67,8 @@
 
  note
  :
-     pitch duration? # noteSingle
-     | '[' pitch+ ']' duration? # noteChord
+     pitch duration? noteSuffix* # noteSingle
+     | '[' pitch+ ']' duration? noteSuffix* # noteChord
      | 'R' duration? # noteRest
  ;
 
@@ -107,6 +107,11 @@
      INT '/' INT # durationFraction
      | '/' INT # durationInvertedInteger
      | INT # durationInteger
+ ;
+
+ noteSuffix
+ :
+     '~' # noteSuffixTie
  ;
 
  scoreSettings

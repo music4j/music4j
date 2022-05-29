@@ -1,4 +1,4 @@
-package org.music4j.simple;
+package org.music4j.utils;
 
 import java.util.AbstractSet;
 import java.util.Comparator;

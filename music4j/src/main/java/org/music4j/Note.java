@@ -44,7 +44,8 @@ public interface Note extends NavigableSet<Pitch>, Measurable {
     }
 
     /**
-     * Static factory method that returns a note equivalent to the given string representation.
+     * Static factory method that returns a note equivalent to the given string
+     * representation.
      *
      * @param input the given string input.
      * @return a note.
@@ -91,6 +92,30 @@ public interface Note extends NavigableSet<Pitch>, Measurable {
      * duration.
      */
     void setDots(int i);
+
+    /**
+     * Set if the note starts a tie.
+     */
+    void setTieStart(boolean isTieStart);
+
+    /**
+     * Sets if the note ends a tie.
+     */
+    void setTieEnd(boolean isTieStart);
+
+    /**
+     * Returns true if a tie starts with this note.
+     *
+     * @return true if a tie starts with this note.
+     */
+    boolean isTieStart();
+
+    /**
+     * Returns true if a tie ends with this note.
+     *
+     * @return true if a tie ends with this note.
+     */
+    boolean isTieEnd();
 
     /**
      * Returns a descending map as Note. {@inheritDoc}

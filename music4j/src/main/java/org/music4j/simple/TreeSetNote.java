@@ -16,6 +16,7 @@ import org.music4j.Pitch;
 import org.music4j.grammar.RubatoInterpreter;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
+import org.music4j.utils.ForwardingNavigableSet;
 
 /**
  * Simple implementation for the note interface based on a TreeSet.
@@ -27,6 +28,10 @@ public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements 
     private Note.Type type;
 
     private int dots;
+
+    private boolean isTieStart;
+
+    private boolean isTieEnd;
 
     /*
      * Private constructor is used to covariantly return appropriate subsets. This
@@ -85,6 +90,38 @@ public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements 
     @Override
     public void setDots(int i) {
         this.dots = i;
+    }
+
+    /**
+     * @return the isTieStart
+     */
+    @Override
+    public boolean isTieStart() {
+        return isTieStart;
+    }
+
+    /**
+     * @param isTieStart the isTieStart to set
+     */
+    @Override
+    public void setTieStart(boolean isTieStart) {
+        this.isTieStart = isTieStart;
+    }
+
+    /**
+     * @return the isTieEnd
+     */
+    @Override
+    public boolean isTieEnd() {
+        return isTieEnd;
+    }
+
+    /**
+     * @param isTieEnd the isTieEnd to set
+     */
+    @Override
+    public void setTieEnd(boolean isTieEnd) {
+        this.isTieEnd = isTieEnd;
     }
 
     @Override
