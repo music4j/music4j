@@ -1,0 +1,26 @@
+
+Score {
+    [MODE: relative]
+
+    Part {
+        Staff {
+            Voice{
+                C''/2 D Eb F G1 G |
+                Ab Ab G G
+            }
+
+            Voice{
+                R4 |
+                G''1 F F Eb
+            }
+        }
+
+        Staff {
+            Voice {
+                R4 |
+                F'/2 G Ab Bb C1 C
+            }
+        }
+    }
+
+}
