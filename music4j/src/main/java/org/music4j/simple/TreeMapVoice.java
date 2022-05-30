@@ -18,7 +18,7 @@ import org.music4j.Measurable;
 import org.music4j.Note;
 import org.music4j.Voice;
 import org.music4j.VoicePackException;
-import org.music4j.grammar.RubatoInterpreter;
+import org.music4j.grammar.RubatoVisitorImpl;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingNavigableMap;
@@ -45,7 +45,7 @@ public final class TreeMapVoice extends ForwardingNavigableMap<BarTime, Note> im
             TokenStream tokens = new CommonTokenStream(lexer);
             RubatoParser parser = new RubatoParser(tokens);
             parser.setErrorHandler(new BailErrorStrategy());
-            RubatoInterpreter interpreter = new RubatoInterpreter();
+            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
             return interpreter.visitVoice(parser.voice());
         } catch (ParseCancellationException e) {
             throw new IllegalArgumentException(String.format("The given input \"%s\" cannot be processed.", string));

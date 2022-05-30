@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.music4j.Part;
 import org.music4j.Score;
-import org.music4j.grammar.RubatoInterpreter;
+import org.music4j.grammar.RubatoVisitorImpl;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingList;
@@ -34,7 +34,7 @@ public class ArrayListScore extends ForwardingList<Part> implements Score {
             TokenStream tokens = new CommonTokenStream(lexer);
             RubatoParser parser = new RubatoParser(tokens);
             parser.setErrorHandler(new BailErrorStrategy());
-            RubatoInterpreter interpreter = new RubatoInterpreter();
+            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
             return interpreter.visitScore(parser.score());
         } catch (ParseCancellationException e) {
             throw new IllegalArgumentException(
@@ -49,7 +49,7 @@ public class ArrayListScore extends ForwardingList<Part> implements Score {
             TokenStream tokens = new CommonTokenStream(lexer);
             RubatoParser parser = new RubatoParser(tokens);
             parser.setErrorHandler(new BailErrorStrategy());
-            RubatoInterpreter interpreter = new RubatoInterpreter();
+            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
             return interpreter.visitScore(parser.score());
         } catch (ParseCancellationException e) {
             throw new IllegalArgumentException(

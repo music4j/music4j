@@ -13,7 +13,7 @@ import org.antlr.v4.runtime.misc.ParseCancellationException;
 import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
-import org.music4j.grammar.RubatoInterpreter;
+import org.music4j.grammar.RubatoVisitorImpl;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingNavigableSet;
@@ -59,7 +59,7 @@ public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements 
             TokenStream tokens = new CommonTokenStream(lexer);
             RubatoParser parser = new RubatoParser(tokens);
             parser.setErrorHandler(new BailErrorStrategy());
-            RubatoInterpreter interpreter = new RubatoInterpreter();
+            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
             return interpreter.visitNote(parser.note());
         } catch (ParseCancellationException e) {
             throw new IllegalArgumentException(

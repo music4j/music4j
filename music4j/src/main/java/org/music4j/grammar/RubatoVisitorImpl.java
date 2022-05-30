@@ -65,14 +65,14 @@ import org.music4j.utils.Container;
  * Most of the visitor methods will covariantly return an object of the
  * appropriate type.
  */
-public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements RubatoVisitor<Object> {
+public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements RubatoVisitor<Object> {
 
     /**
      * Container stores ParserToken.
      */
     private final Container<ParserToken> container;
 
-    public RubatoInterpreter() {
+    public RubatoVisitorImpl() {
         container = new Container<>();
         container.add(new DefaultDuration());
         container.add(new DefaultOctave());
