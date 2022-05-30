@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.music4j.Bar;
@@ -123,6 +124,33 @@ class IntegrationTest {
         File file = new File(filePath.toURI());
         Score actual = Score.readFile(file);
         Score expected = Score.of("Score{ Part { Staff { C' D' C' E' | C' F' C' G' | C' A' C' B' | C''4 | G'''2 F'2 }}}");
+        assertEquals(expected, actual);
+    }
+
+    /**
+     * Score with relative time mode parsing
+     */
+    @Test
+    void readWithSeperatelyDeclaredVoices() throws IOException, URISyntaxException {
+        URL filePath = getClass().getResource("008-SeperateVoices.rubato");
+        File file = new File(filePath.toURI());
+        Score actual = Score.readFile(file);
+        Score expected = Score.of();
+        Part part = Part.of();
+        Staff staff1 = Staff.of();
+        Bar bar1Staff1 = Bar.of("C''/2 D''/2 Eb''/2 F''/2 G'' G'' & R4");
+        Bar bar2Staff1 = Bar.of("Ab'' Ab'' G'' G'' & G'' F'' F'' Eb''");
+
+        Staff staff2 = Staff.of();
+        Bar bar1Staff2 = Bar.of("R4");
+        Bar bar2Staff2 = Bar.of("F'/2 G'/2 Ab'/2 Bb'/2 C'' C''");
+
+        expected.add(part);
+        part.addAll(List.of(staff1, staff2));
+        staff1.addAll(List.of(bar1Staff1, bar2Staff1));
+        staff2.addAll(List.of(bar1Staff2, bar2Staff2));
+
+
         assertEquals(expected, actual);
     }
 }

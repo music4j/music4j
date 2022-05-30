@@ -32,7 +32,17 @@
      | 'Staff' '{' bar
      (
          '|' bar
-     )* '}' # staffBar
+     )* '}' # staffBarwise
+     | 'Staff' '{' staffVoice* '}' # staffVoicewise
+ ;
+
+ staffVoice
+ :
+     'Voice' '{' '}' # staffVoiceEmpty
+     | 'Voice' '{' voice
+     (
+         '|' voice
+     )* '}' # staffVoiceNonEmpty
  ;
 
  /**
@@ -120,6 +130,7 @@
      (
          modeTime
          | modeOctave
+         | modeTimeAndOctave
      ) ']'
  ;
 
@@ -133,6 +144,12 @@
  :
      'MODE_OCTAVE' ':' 'absolute' # modeOctaveAbsolute
      | 'MODE_OCTAVE' ':' 'relative' # modeOctaveRelative
+ ;
+
+ modeTimeAndOctave
+ :
+     'MODE' ':' 'absolute' # modeTimeAndOctaveAbsolute
+     | 'MODE' ':' 'relative' # modeTimeAndOctaveRelative
  ;
  /*
  * ---------------------------------------------Lexer rules---------------------------------------------

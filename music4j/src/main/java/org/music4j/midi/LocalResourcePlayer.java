@@ -7,7 +7,7 @@ import javax.sound.midi.MidiUnavailableException;
 
 import org.music4j.Score;
 
-public class RubatoPlayer {
+public class LocalResourcePlayer {
 
     public static void main(String[] args) throws IOException, MidiUnavailableException {
         File rubatoFile = new File(args[0]);

@@ -1,8 +1,10 @@
 package org.music4j.grammar;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.music4j.Bar;
@@ -34,6 +36,8 @@ import org.music4j.grammar.gen.RubatoParser.DurationInvertedIntegerContext;
 import org.music4j.grammar.gen.RubatoParser.ModeOctaveAbsoluteContext;
 import org.music4j.grammar.gen.RubatoParser.ModeOctaveRelativeContext;
 import org.music4j.grammar.gen.RubatoParser.ModeTimeAbsoluteContext;
+import org.music4j.grammar.gen.RubatoParser.ModeTimeAndOctaveAbsoluteContext;
+import org.music4j.grammar.gen.RubatoParser.ModeTimeAndOctaveRelativeContext;
 import org.music4j.grammar.gen.RubatoParser.ModeTimeRelativeContext;
 import org.music4j.grammar.gen.RubatoParser.NoteChordContext;
 import org.music4j.grammar.gen.RubatoParser.NoteContext;
@@ -43,9 +47,13 @@ import org.music4j.grammar.gen.RubatoParser.OctaveContext;
 import org.music4j.grammar.gen.RubatoParser.PartContext;
 import org.music4j.grammar.gen.RubatoParser.PitchContext;
 import org.music4j.grammar.gen.RubatoParser.ScoreContext;
-import org.music4j.grammar.gen.RubatoParser.StaffBarContext;
+import org.music4j.grammar.gen.RubatoParser.StaffBarwiseContext;
 import org.music4j.grammar.gen.RubatoParser.StaffContext;
 import org.music4j.grammar.gen.RubatoParser.StaffEmptyContext;
+import org.music4j.grammar.gen.RubatoParser.StaffVoiceContext;
+import org.music4j.grammar.gen.RubatoParser.StaffVoiceEmptyContext;
+import org.music4j.grammar.gen.RubatoParser.StaffVoiceNonEmptyContext;
+import org.music4j.grammar.gen.RubatoParser.StaffVoicewiseContext;
 import org.music4j.grammar.gen.RubatoParser.VoiceContext;
 import org.music4j.grammar.gen.RubatoVisitor;
 import org.music4j.utils.Container;
@@ -120,7 +128,41 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     }
 
     @Override
-    public Staff visitStaffBar(StaffBarContext ctx) {
+    public Staff visitStaffVoicewise(StaffVoicewiseContext ctx) {
+        Staff staff = Staff.of();
+
+        // Each staff voices represents a single voice which spans over the whole staff
+        for (StaffVoiceContext staffVoiceCtx : ctx.staffVoice()) {
+            @SuppressWarnings("unchecked")
+            List<Voice> listOfVoice = (List<Voice>) visit(staffVoiceCtx);
+            for (int i = 0; i < listOfVoice.size(); i++) {
+                if (i + 1 > staff.size()) {
+                    Bar bar = Bar.of();
+                    bar.add(listOfVoice.get(i));
+                    staff.add(bar);
+                } else {
+                    Bar bar = staff.get(i);
+                    bar.add(listOfVoice.get(i));
+                }
+            }
+        }
+        return staff;
+    }
+
+    @Override
+    public List<Voice> visitStaffVoiceEmpty(StaffVoiceEmptyContext ctx) {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Voice> visitStaffVoiceNonEmpty(StaffVoiceNonEmptyContext ctx) {
+        set(DefaultDuration.class, BarTime.of(1));
+        set(DefaultOctave.class, Octave.SMALL);
+        return ctx.voice().stream().map(this::visitVoice).collect(Collectors.toList());
+    }
+
+    @Override
+    public Staff visitStaffBarwise(StaffBarwiseContext ctx) {
         Staff staff = Staff.of();
         for (BarContext barCtx : ctx.bar()) {
             staff.add(visitBar(barCtx));
@@ -306,5 +348,19 @@ public class RubatoInterpreter extends RubatoBaseVisitor<Object> implements Ruba
     public Object visitModeOctaveRelative(ModeOctaveRelativeContext ctx) {
         set(RelativeOctaveMode.class, true);
         return super.visitModeOctaveRelative(ctx);
+    }
+
+    @Override
+    public Object visitModeTimeAndOctaveAbsolute(ModeTimeAndOctaveAbsoluteContext ctx) {
+        set(RelativeTimeMode.class, false);
+        set(RelativeOctaveMode.class, false);
+        return super.visitModeTimeAndOctaveAbsolute(ctx);
+    }
+
+    @Override
+    public Object visitModeTimeAndOctaveRelative(ModeTimeAndOctaveRelativeContext ctx) {
+        set(RelativeTimeMode.class, true);
+        set(RelativeOctaveMode.class, true);
+        return super.visitModeTimeAndOctaveRelative(ctx);
     }
 }
