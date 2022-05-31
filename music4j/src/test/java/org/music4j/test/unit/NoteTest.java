@@ -264,7 +264,9 @@ class NoteTest {
         @Test
         void parseThrowsException() {
             IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Note.of("[C#' E Gx'/2"));
-            assertEquals("The given input \"[C#' E Gx'/2\" cannot be processed.", e.getMessage());
+            assertEquals("The given input \"[C#' E Gx'/2\" cannot be processed. \r\n"
+                    + " line 1: 10 extraneous input '/' expecting {']', STEP} \r\n"
+                    + "", e.getMessage());
         }
     }
 }

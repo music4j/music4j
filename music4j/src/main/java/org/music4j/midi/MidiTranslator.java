@@ -107,12 +107,18 @@ public class MidiTranslator {
             int timeStart = time.getNumerator() * (resolution / time.getDenominator());
             int timeEnd = noteEnd.getNumerator() * (resolution / noteEnd.getDenominator());
             for (Pitch p : note) {
+
                 // Switch note on
-                MidiMessage noteOn = new ShortMessage(ShortMessage.NOTE_ON, 0, p.asInt(), 64);
-                track.add(new MidiEvent(noteOn, timeStart));
+                if(!note.isTieEnd()) {
+                    MidiMessage noteOn = new ShortMessage(ShortMessage.NOTE_ON, 0, p.asInt(), 64);
+                    track.add(new MidiEvent(noteOn, timeStart));
+                }
+
                 // Switch note off
-                MidiMessage noteOff = new ShortMessage(ShortMessage.NOTE_OFF, 0, p.asInt(), 0);
-                track.add(new MidiEvent(noteOff, timeEnd));
+                if(!note.isTieStart()) {
+                    MidiMessage noteOff = new ShortMessage(ShortMessage.NOTE_OFF, 0, p.asInt(), 0);
+                    track.add(new MidiEvent(noteOff, timeEnd));
+                }
             }
 
         } catch (InvalidMidiDataException e) {

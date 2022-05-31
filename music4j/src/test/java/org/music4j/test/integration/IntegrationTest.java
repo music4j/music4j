@@ -82,12 +82,12 @@ class IntegrationTest {
         Part part = score.get(0);
         Staff staff = part.get(0);
 
-        //First bar
+        // First bar
         Bar first = staff.get(0);
         assertEquals(Voice.of("C' D' E' F'"), first.get(0));
         assertEquals(Voice.of("E'/2 G'/2 F'/2 G'/2 C'' B'"), first.get(1));
 
-        //Second bar
+        // Second bar
         Bar second = staff.get(1);
         assertEquals(Voice.of("G' A' B' C''"), second.get(0));
         assertEquals(Voice.of("G4"), second.get(1));
@@ -104,12 +104,12 @@ class IntegrationTest {
         Part part = score.get(0);
         Staff staff = part.get(0);
 
-        //First bar
+        // First bar
         Bar first = staff.get(0);
         assertEquals(Voice.of("C' D' E' F'"), first.get(0));
         assertEquals(Voice.of("E'/2 G'/2 F'/2 G'/2 C'' B'"), first.get(1));
 
-        //Second bar
+        // Second bar
         Bar second = staff.get(1);
         assertEquals(Voice.of("G' A' B' C''"), second.get(0));
         assertEquals(Voice.of("G4"), second.get(1));
@@ -123,7 +123,8 @@ class IntegrationTest {
         URL filePath = getClass().getResource("007-RelativeOctaveMode.rubato");
         File file = new File(filePath.toURI());
         Score actual = Score.readFile(file);
-        Score expected = Score.of("Score{ Part { Staff { C' D' C' E' | C' F' C' G' | C' A' C' B' | C''4 | G'''2 F'2 }}}");
+        Score expected = Score
+                .of("Score{ Part { Staff { Voice{ C' D' C' E' | C' F' C' G' | C' A' C' B' | C''4 | G'''2 F'2 }}}}");
         assertEquals(expected, actual);
     }
 
@@ -149,7 +150,6 @@ class IntegrationTest {
         part.addAll(List.of(staff1, staff2));
         staff1.addAll(List.of(bar1Staff1, bar2Staff1));
         staff2.addAll(List.of(bar1Staff2, bar2Staff2));
-
 
         assertEquals(expected, actual);
     }

@@ -3,12 +3,16 @@ Score {
     [MODE_TIME: relative]
 
     Part {
-
         Staff {
-            C' D' E' F'     &     E'/2 G' F' G' C''1 B' |
-            G' A' B' C''    &     G4
+            Voice {
+                C' D' E' F' |
+                G' A' B' C''
+            }
+
+            Voice {
+                E'/2 G' F' G' C''1 B' |
+                G4
+            }
         }
-
     }
-
 }

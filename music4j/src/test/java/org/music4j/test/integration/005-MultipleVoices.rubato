@@ -1,13 +1,16 @@
 
 Score {
-
     Part {
-
         Staff {
-            C' D' E' F'     &     E'/2 G'/2 F'/2 G'/2 C'' B' |
-            G' A' B' C''    &     G4
+            Voice {
+                C' D' E' F' |
+                G' A' B' C''
+            }
+
+            Voice {
+                E'/2 G'/2 F'/2 G'/2 C'' B' |
+                G4
+            }
         }
-
     }
-
 }
