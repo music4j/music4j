@@ -2,8 +2,6 @@ package org.music4j.grammar;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -70,7 +68,7 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
     /**
      * Container stores ParserToken.
      */
-    private final Container<ParserToken> container;
+    private final Container<ParserToken<?>> container;
 
     public RubatoVisitorImpl() {
         container = new Container<>();
@@ -81,12 +79,12 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
         container.add(new PreviousStep());
     }
 
-    private <E, T extends Supplier<E> & ParserToken> E get(Class<T> key) {
+    private <E, T extends ParserToken<E>> E get(Class<T> key) {
         T token = container.get(key);
         return token == null ? null : token.get();
     }
 
-    private <E, T extends Consumer<E> & ParserToken> void set(Class<T> key, E value) {
+    private <E, T extends ParserToken<E>> void set(Class<T> key, E value) {
         T token = container.get(key);
         if (token != null) {
             token.accept(value);
@@ -133,6 +131,9 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
 
         // Each staff voices represents a single voice which spans over the whole staff
         for (StaffVoiceContext staffVoiceCtx : ctx.staffVoice()) {
+            set(DefaultDuration.class, BarTime.of(1));
+            set(PreviousStep.class, Step.C);
+            set(DefaultOctave.class, Octave.SMALL);
             @SuppressWarnings("unchecked")
             List<Voice> listOfVoice = (List<Voice>) visit(staffVoiceCtx);
             for (int i = 0; i < listOfVoice.size(); i++) {
@@ -156,8 +157,6 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
 
     @Override
     public List<Voice> visitStaffVoiceNonEmpty(StaffVoiceNonEmptyContext ctx) {
-        set(DefaultDuration.class, BarTime.of(1));
-        set(DefaultOctave.class, Octave.SMALL);
         return ctx.voice().stream().map(this::visitVoice).collect(Collectors.toList());
     }
 
