@@ -45,13 +45,10 @@ import org.music4j.grammar.gen.RubatoParser.OctaveContext;
 import org.music4j.grammar.gen.RubatoParser.PartContext;
 import org.music4j.grammar.gen.RubatoParser.PitchContext;
 import org.music4j.grammar.gen.RubatoParser.ScoreContext;
-import org.music4j.grammar.gen.RubatoParser.StaffBarwiseContext;
 import org.music4j.grammar.gen.RubatoParser.StaffContext;
-import org.music4j.grammar.gen.RubatoParser.StaffEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceNonEmptyContext;
-import org.music4j.grammar.gen.RubatoParser.StaffVoicewiseContext;
 import org.music4j.grammar.gen.RubatoParser.VoiceContext;
 import org.music4j.grammar.gen.RubatoVisitor;
 import org.music4j.utils.Container;
@@ -115,18 +112,8 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
         return part;
     }
 
+    @Override
     public Staff visitStaff(StaffContext ctx) {
-        set(DefaultOctave.class, Octave.SMALL);
-        return (Staff) visit(ctx);
-    }
-
-    @Override
-    public Staff visitStaffEmpty(StaffEmptyContext ctx) {
-        return Staff.of();
-    }
-
-    @Override
-    public Staff visitStaffVoicewise(StaffVoicewiseContext ctx) {
         Staff staff = Staff.of();
 
         // Each staff voices represents a single voice which spans over the whole staff
@@ -158,15 +145,6 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
     @Override
     public List<Voice> visitStaffVoiceNonEmpty(StaffVoiceNonEmptyContext ctx) {
         return ctx.voice().stream().map(this::visitVoice).collect(Collectors.toList());
-    }
-
-    @Override
-    public Staff visitStaffBarwise(StaffBarwiseContext ctx) {
-        Staff staff = Staff.of();
-        for (BarContext barCtx : ctx.bar()) {
-            staff.add(visitBar(barCtx));
-        }
-        return staff;
     }
 
     @Override

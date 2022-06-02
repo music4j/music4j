@@ -344,7 +344,9 @@ class BarTimeTest {
         @Test
         void parseThrowsException() {
             IllegalArgumentException e = assertThrows(IllegalArgumentException.class ,() -> BarTime.of("1//2"));
-            assertEquals("The given input \"1//2\" cannot be processed.", e.getMessage());
+            assertEquals("The given input \"1//2\" cannot be processed. \r\n"
+                    + " line 1: 2 extraneous input '/' expecting INT \r\n"
+                    + "", e.getMessage());
         }
     }
 }

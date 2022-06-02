@@ -28,12 +28,7 @@
  */
  staff
  :
-     'Staff' '{' '}' # staffEmpty
-     | 'Staff' '{' bar
-     (
-         '|' bar
-     )* '}' # staffBarwise
-     | 'Staff' '{' staffVoice* '}' # staffVoicewise
+     'Staff' '{' staffVoice* '}'
  ;
 
  staffVoice

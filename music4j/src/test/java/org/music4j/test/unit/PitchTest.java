@@ -172,7 +172,8 @@ class PitchTest {
         @Test
         void parseThrowsException() {
             IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Pitch.of("b"));
-            assertEquals("The given input \"b\" cannot be processed.", e.getMessage());
+            assertEquals("The given input \"b\" cannot be processed. \r\n"
+                    + " No enum constant org.music4j.Pitch.Step.<missing STEP>", e.getMessage());
         }
     }
 }

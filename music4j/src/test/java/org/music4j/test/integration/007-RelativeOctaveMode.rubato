@@ -5,13 +5,13 @@ Score {
     Part {
 
         Staff {
-            C' D C E |
-            C F C G'|
-            C, A' C, B' |
-            C4 |
-            G''2 F,,2
+            Voice {
+                C' D C E |
+                C F C G'|
+                C, A' C, B' |
+                C4 |
+                G''2 F,,2
+            }
         }
-
     }
-
 }
