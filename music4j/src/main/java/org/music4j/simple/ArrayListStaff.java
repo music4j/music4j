@@ -1,6 +1,7 @@
 package org.music4j.simple;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.music4j.Bar;
 import org.music4j.Staff;
@@ -12,4 +13,31 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
         super(new ArrayList<>());
     }
 
+    @Override
+    public String toString() {
+
+        int numberOfVoices = stream().map(Bar::size).max(Integer::compareTo).orElse(1);
+        List<StringBuilder> voices = new ArrayList<>();
+        for (int i = 0; i < numberOfVoices; i++) {
+            voices.add(new StringBuilder().append(String.format("Voice { %n")));
+        }
+        for (Bar bar : this) {
+            for (int i = 0; i < numberOfVoices; i++) {
+                StringBuilder voiceBuilder = voices.get(i);
+                if (i < bar.size()) {
+                    voiceBuilder.append(bar.get(i)).append(String.format(" |%n"));
+                } else {
+                    voiceBuilder.append(String.format("Z%s |%n", bar.length()));
+                }
+            }
+        }
+        voices.forEach(sb -> sb.append(String.format("} %n")));
+
+        StringBuilder staffBuilder = new StringBuilder();
+        staffBuilder.append(String.format("Staff { %n"));
+        voices.forEach(staffBuilder::append);
+        staffBuilder.append(String.format("} %n"));
+
+        return staffBuilder.toString();
+    }
 }
