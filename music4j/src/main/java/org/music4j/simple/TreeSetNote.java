@@ -2,6 +2,7 @@ package org.music4j.simple;
 
 import java.util.Collection;
 import java.util.NavigableSet;
+import java.util.Objects;
 import java.util.TreeSet;
 
 import org.antlr.v4.runtime.CharStream;
@@ -174,6 +175,26 @@ public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements 
     @Override
     public Note headSet(Pitch toElement) {
         return headSet(toElement, false);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(duration);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        TreeSetNote other = (TreeSetNote) obj;
+        return Objects.equals(duration, other.duration);
     }
 
     @Override
