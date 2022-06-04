@@ -61,4 +61,8 @@ public abstract class AbstractVisitor extends RubatoBaseVisitor<Object> implemen
     protected <E, T extends AbstractParserToken<E>> void remove(Class<T> key) {
         container.removeType(key);
     }
+
+    protected AbstractVisitor getParent() {
+        return parent;
+    }
 }
