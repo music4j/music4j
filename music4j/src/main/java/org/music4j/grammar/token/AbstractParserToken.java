@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * Marker interface for container
+ * Token class stores a value.
  */
 public abstract class AbstractParserToken<T> implements Supplier<T>, Consumer<T> {
 

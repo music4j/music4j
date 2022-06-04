@@ -50,13 +50,13 @@ import org.music4j.grammar.gen.RubatoParser.StaffVoiceContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceNonEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.VoiceContext;
+import org.music4j.grammar.gen.RubatoVisitor;
 import org.music4j.grammar.token.AbstractParserToken;
 import org.music4j.grammar.token.DefaultDuration;
 import org.music4j.grammar.token.DefaultOctave;
+import org.music4j.grammar.token.OctaveMode;
 import org.music4j.grammar.token.PreviousStep;
-import org.music4j.grammar.token.RelativeOctaveMode;
-import org.music4j.grammar.token.RelativeTimeMode;
-import org.music4j.grammar.gen.RubatoVisitor;
+import org.music4j.grammar.token.TimeMode;
 import org.music4j.utils.Container;
 
 /**
@@ -77,9 +77,12 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
         container = new Container<>();
         container.add(new DefaultDuration());
         container.add(new DefaultOctave());
-        container.add(new RelativeTimeMode());
-        container.add(new RelativeOctaveMode());
+        container.add(new TimeMode());
+        container.add(new OctaveMode());
         container.add(new PreviousStep());
+
+        set(TimeMode.class, false);
+        set(OctaveMode.class, false);
     }
 
     private <E, T extends AbstractParserToken<E>> E get(Class<T> key) {
@@ -189,7 +192,7 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
      */
     public Note visitNote(NoteContext ctx) {
         Note note = (Note) visit(ctx);
-        if (get(RelativeTimeMode.class)) {
+        if (get(TimeMode.class)) {
             set(DefaultDuration.class, note.getDuration());
         }
         return note;
@@ -231,7 +234,7 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
         Alter alter = alterNode != null ? visitAlter(alterNode) : Alter.NATURAL;
 
         // If the parser is in relative mode the octave must be adjusted
-        if (get(RelativeOctaveMode.class)) {
+        if (get(OctaveMode.class)) {
             int octaveShift = step.rank() - get(PreviousStep.class).rank() > 3 ? -1
                     : step.rank() - get(PreviousStep.class).rank() < -3 ? 1 : 0;
             octave = Octave.valueOf(octaveShift + octave.rank() + get(DefaultOctave.class).rank());
@@ -311,39 +314,39 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
 
     @Override
     public Object visitModeTimeAbsolute(ModeTimeAbsoluteContext ctx) {
-        set(RelativeTimeMode.class, false);
+        set(TimeMode.class, false);
         return super.visitModeTimeAbsolute(ctx);
     }
 
     @Override
     public Object visitModeTimeRelative(ModeTimeRelativeContext ctx) {
-        set(RelativeTimeMode.class, true);
+        set(TimeMode.class, true);
         return super.visitModeTimeRelative(ctx);
     }
 
     @Override
     public Object visitModeOctaveAbsolute(ModeOctaveAbsoluteContext ctx) {
-        set(RelativeOctaveMode.class, false);
+        set(OctaveMode.class, false);
         return super.visitModeOctaveAbsolute(ctx);
     }
 
     @Override
     public Object visitModeOctaveRelative(ModeOctaveRelativeContext ctx) {
-        set(RelativeOctaveMode.class, true);
+        set(OctaveMode.class, true);
         return super.visitModeOctaveRelative(ctx);
     }
 
     @Override
     public Object visitModeTimeAndOctaveAbsolute(ModeTimeAndOctaveAbsoluteContext ctx) {
-        set(RelativeTimeMode.class, false);
-        set(RelativeOctaveMode.class, false);
+        set(TimeMode.class, false);
+        set(OctaveMode.class, false);
         return super.visitModeTimeAndOctaveAbsolute(ctx);
     }
 
     @Override
     public Object visitModeTimeAndOctaveRelative(ModeTimeAndOctaveRelativeContext ctx) {
-        set(RelativeTimeMode.class, true);
-        set(RelativeOctaveMode.class, true);
+        set(TimeMode.class, true);
+        set(OctaveMode.class, true);
         return super.visitModeTimeAndOctaveRelative(ctx);
     }
 }
