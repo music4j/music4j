@@ -50,6 +50,12 @@ import org.music4j.grammar.gen.RubatoParser.StaffVoiceContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceNonEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.VoiceContext;
+import org.music4j.grammar.token.AbstractParserToken;
+import org.music4j.grammar.token.DefaultDuration;
+import org.music4j.grammar.token.DefaultOctave;
+import org.music4j.grammar.token.PreviousStep;
+import org.music4j.grammar.token.RelativeOctaveMode;
+import org.music4j.grammar.token.RelativeTimeMode;
 import org.music4j.grammar.gen.RubatoVisitor;
 import org.music4j.utils.Container;
 
@@ -65,7 +71,7 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
     /**
      * Container stores ParserToken.
      */
-    private final Container<ParserToken<?>> container;
+    private final Container<AbstractParserToken<?>> container;
 
     public RubatoVisitorImpl() {
         container = new Container<>();
@@ -76,12 +82,12 @@ public class RubatoVisitorImpl extends RubatoBaseVisitor<Object> implements Ruba
         container.add(new PreviousStep());
     }
 
-    private <E, T extends ParserToken<E>> E get(Class<T> key) {
+    private <E, T extends AbstractParserToken<E>> E get(Class<T> key) {
         T token = container.get(key);
         return token == null ? null : token.get();
     }
 
-    private <E, T extends ParserToken<E>> void set(Class<T> key, E value) {
+    private <E, T extends AbstractParserToken<E>> void set(Class<T> key, E value) {
         T token = container.get(key);
         if (token != null) {
             token.accept(value);
