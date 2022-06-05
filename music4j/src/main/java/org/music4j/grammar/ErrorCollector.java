@@ -20,9 +20,9 @@ public class ErrorCollector extends BaseErrorListener {
         errors.add(e);
     }
 
-    public void throwErrors() throws Exception {
+    public void throwErrors() throws ParseException {
         if(!errors.isEmpty()) {
-            throw new Exception(errorMessage.toString());
+            throw new ParseException(errorMessage.toString());
         }
     }
 

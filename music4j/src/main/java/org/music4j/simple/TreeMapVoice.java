@@ -17,7 +17,8 @@ import org.music4j.Note;
 import org.music4j.Voice;
 import org.music4j.VoicePackException;
 import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.RubatoVisitorImpl;
+import org.music4j.grammar.ParseException;
+import org.music4j.grammar.VoiceVisitor;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingNavigableMap;
@@ -48,13 +49,12 @@ public final class TreeMapVoice extends ForwardingNavigableMap<BarTime, Note> im
             RubatoParser parser = new RubatoParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errCollector);
-            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
+            VoiceVisitor interpreter = new VoiceVisitor();
             Voice voice = interpreter.visitVoice(parser.voice());
             errCollector.throwErrors();
             return voice;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    String.format("The given input \"%s\" cannot be processed. %n %s", string, e.getMessage()));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 

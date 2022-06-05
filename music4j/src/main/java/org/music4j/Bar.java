@@ -22,17 +22,6 @@ public interface Bar extends List<Voice> {
     }
 
     /**
-     * Static factory for the bar interface. Returns an Bar equivalent to the given
-     * string according to the Rubato grammar.
-     *
-     * @param string the given input
-     * @throws IllegalArgumentException if the input cannot be processed
-     */
-    static Bar of(String string) {
-        return ArrayListBar.parse(string);
-    }
-
-    /**
      * Returns the length of the bar.
      *
      * @return the length of the bar.

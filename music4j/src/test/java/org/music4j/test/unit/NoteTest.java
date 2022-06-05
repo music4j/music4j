@@ -198,7 +198,7 @@ class NoteTest {
     @Test
     void testToString() {
         Pitch p1 = Pitch.of(Step.C, Alter.SHARP, Octave.TWO_LINED);
-        Note note = Note.of(BarTime.of(2) ,Collections.singleton(p1));
+        Note note = Note.of(BarTime.of(2), Collections.singleton(p1));
         assertEquals("C#''2", note.toString());
     }
 
@@ -208,7 +208,7 @@ class NoteTest {
      */
     @Test
     void testToStringRest() {
-        Note note = Note.of(BarTime.of(1,2));
+        Note note = Note.of(BarTime.of(1, 2));
         assertEquals("R/2", note.toString());
     }
 
@@ -264,9 +264,9 @@ class NoteTest {
         @Test
         void parseThrowsException() {
             IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Note.of("[C#' E Gx'/2"));
-            assertEquals("The given input \"[C#' E Gx'/2\" cannot be processed. \r\n"
-                    + " line 1: 10 extraneous input '/' expecting {']', STEP} \r\n"
-                    + "", e.getMessage());
+            assertEquals(
+                    "org.music4j.grammar.ParseException: line 1: 10 extraneous input '/' expecting {']', STEP} \r\n",
+                    e.getMessage());
         }
     }
 }

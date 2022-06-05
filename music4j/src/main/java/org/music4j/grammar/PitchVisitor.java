@@ -21,6 +21,10 @@ import org.music4j.grammar.token.PreviousStep;
 
 public class PitchVisitor extends AbstractVisitor {
 
+    public PitchVisitor() {
+        add(new OctaveMode(), false);
+    }
+
     public PitchVisitor(NoteVisitor noteVisitor) {
         super(noteVisitor);
     }

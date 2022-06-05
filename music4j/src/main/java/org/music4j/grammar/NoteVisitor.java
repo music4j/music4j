@@ -7,9 +7,16 @@ import org.music4j.grammar.gen.RubatoParser.NoteContext;
 import org.music4j.grammar.gen.RubatoParser.NoteRestContext;
 import org.music4j.grammar.gen.RubatoParser.NoteSingleContext;
 import org.music4j.grammar.token.DefaultDuration;
+import org.music4j.grammar.token.OctaveMode;
 import org.music4j.grammar.token.TimeMode;
 
 public class NoteVisitor extends AbstractVisitor {
+
+    public NoteVisitor() {
+        add(new OctaveMode(), false);
+        add(new TimeMode(), false);
+        add(new DefaultDuration(), BarTime.of(1));
+    }
 
     public NoteVisitor(VoiceVisitor voiceVisitor) {
         super(voiceVisitor);
@@ -18,6 +25,7 @@ public class NoteVisitor extends AbstractVisitor {
     public Note visitNote(NoteContext ctx) {
         Note note = (Note) visit(ctx);
         if (get(TimeMode.class)) {
+            // Set Default duration in relative mode
             set(DefaultDuration.class, note.getDuration());
         }
         return note;

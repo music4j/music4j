@@ -15,7 +15,6 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
 
     @Override
     public String toString() {
-
         int numberOfVoices = stream().map(Bar::size).max(Integer::compareTo).orElse(1);
         List<StringBuilder> voices = new ArrayList<>();
         for (int i = 0; i < numberOfVoices; i++) {
@@ -25,9 +24,12 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
             for (int i = 0; i < numberOfVoices; i++) {
                 StringBuilder voiceBuilder = voices.get(i);
                 if (i < bar.size()) {
-                    voiceBuilder.append(bar.get(i)).append(String.format(" |%n"));
+                    voiceBuilder.append(bar.get(i));
                 } else {
-                    voiceBuilder.append(String.format("Z%s |%n", bar.length()));
+                    voiceBuilder.append(String.format("Z%s ", bar.length()));
+                }
+                if(i < bar.size()-1) {
+                    voiceBuilder.append(String.format(" |%n"));
                 }
             }
         }

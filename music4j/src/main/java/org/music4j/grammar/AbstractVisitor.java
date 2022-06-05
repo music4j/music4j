@@ -37,13 +37,16 @@ public abstract class AbstractVisitor extends RubatoBaseVisitor<Object> implemen
         T token = container.get(key);
         // If no token was found and a parent is provided we look up the parent.
         if (token == null && parent != null) {
-            token = parent.container.get(key);
+            return parent.get(key);
         }
         return token == null ? null : token.get();
     }
 
     protected <E, T extends AbstractParserToken<E>> void set(Class<T> key, E value) {
         T token = container.get(key);
+        if(token == null && parent != null) {
+            parent.set(key, value);
+        }
         if (token != null) {
             token.accept(value);
         }

@@ -8,6 +8,7 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.music4j.grammar.ErrorCollector;
+import org.music4j.grammar.ParseException;
 import org.music4j.grammar.TimeVisitor;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
@@ -156,9 +157,8 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
             BarTime duration = visitor.visitDuration(parser.duration());
             errCollector.throwErrors();
             return duration;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    String.format("The given input \"%s\" cannot be processed. %n %s", string, e.getMessage()));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 

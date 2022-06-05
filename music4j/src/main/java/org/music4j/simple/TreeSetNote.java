@@ -13,7 +13,8 @@ import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
 import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.RubatoVisitorImpl;
+import org.music4j.grammar.NoteVisitor;
+import org.music4j.grammar.ParseException;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingNavigableSet;
@@ -40,7 +41,7 @@ public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements 
      */
     private TreeSetNote(NavigableSet<Pitch> set, BarTime duration) {
         super(set);
-        this.duration = duration;
+        this.duration = Objects.requireNonNull(duration);
     }
 
     public TreeSetNote(BarTime duration) {
@@ -63,13 +64,12 @@ public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements 
             RubatoParser parser = new RubatoParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errCollector);
-            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
-            Note note = interpreter.visitNote(parser.note());
+            NoteVisitor visitor = new NoteVisitor();
+            Note note = visitor.visitNote(parser.note());
             errCollector.throwErrors();
             return note;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    String.format("The given input \"%s\" cannot be processed. %n %s", string, e.getMessage()));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 

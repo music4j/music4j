@@ -13,7 +13,8 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.RubatoVisitorImpl;
+import org.music4j.grammar.ParseException;
+import org.music4j.grammar.PitchVisitor;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 
@@ -78,7 +79,8 @@ public final class Pitch implements Comparable<Pitch> {
     }
 
     /**
-     * Static factory method that returns a pitch equivalent to the given string representation.
+     * Static factory method that returns a pitch equivalent to the given string
+     * representation.
      *
      * @param input the given string input.
      * @return a pitch.
@@ -94,13 +96,12 @@ public final class Pitch implements Comparable<Pitch> {
             RubatoParser parser = new RubatoParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errCollector);
-            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
-            Pitch pitch = interpreter.visitPitch(parser.pitch());
+            PitchVisitor visitor = new PitchVisitor();
+            Pitch pitch = visitor.visitPitch(parser.pitch());
             errCollector.throwErrors();
             return pitch;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    String.format("The given input \"%s\" cannot be processed. %n %s", string, e.getMessage()));
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 

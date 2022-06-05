@@ -12,7 +12,8 @@ import org.antlr.v4.runtime.TokenStream;
 import org.music4j.Part;
 import org.music4j.Score;
 import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.RubatoVisitorImpl;
+import org.music4j.grammar.ParseException;
+import org.music4j.grammar.ScoreVisitor;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingList;
@@ -37,11 +38,11 @@ public class ArrayListScore extends ForwardingList<Part> implements Score {
             RubatoParser parser = new RubatoParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errCollector);
-            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
-            Score score = interpreter.visitScore(parser.score());
+            ScoreVisitor visitor = new ScoreVisitor();
+            Score score = visitor.visitScore(parser.score());
             errCollector.throwErrors();
             return score;
-        } catch (Exception e) {
+        } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
     }
@@ -57,11 +58,11 @@ public class ArrayListScore extends ForwardingList<Part> implements Score {
             RubatoParser parser = new RubatoParser(tokens);
             parser.removeErrorListeners();
             parser.addErrorListener(errCollector);
-            RubatoVisitorImpl interpreter = new RubatoVisitorImpl();
-            Score score = interpreter.visitScore(parser.score());
+            ScoreVisitor visitor = new ScoreVisitor();
+            Score score = visitor.visitScore(parser.score());
             errCollector.throwErrors();
             return score;
-        } catch (Exception e) {
+        } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
     }

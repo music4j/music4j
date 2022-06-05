@@ -44,6 +44,8 @@ public class StaffVisitor extends AbstractVisitor {
 
         // Each staff voices represents a single voice which spans over the whole staff
         for (StaffVoiceContext staffVoiceCtx : ctx.staffVoice()) {
+            set(PreviousStep.class, Step.C);
+            set(DefaultOctave.class, Octave.SMALL);
             @SuppressWarnings("unchecked")
             List<Voice> listOfVoice = (List<Voice>) visit(staffVoiceCtx);
             for (int i = 0; i < listOfVoice.size(); i++) {
