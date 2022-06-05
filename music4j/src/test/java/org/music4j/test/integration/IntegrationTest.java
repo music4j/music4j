@@ -143,13 +143,14 @@ class IntegrationTest {
         bar1Staff1.add(Voice.of("C''/2 D''/2 Eb''/2 F''/2 G'' G'' "));
         bar1Staff1.add(Voice.of("R4"));
         Bar bar2Staff1 = Bar.of();
-        bar1Staff1.add(Voice.of("Ab'' Ab'' G'' G'' & G'' F'' F'' Eb''"));
+        bar2Staff1.add(Voice.of("Ab'' Ab'' G'' G''"));
+        bar2Staff1.add(Voice.of("G'' F'' F'' Eb''"));
 
         Staff staff2 = Staff.of();
         Bar bar1Staff2 = Bar.of();
         bar1Staff2.add(Voice.of("R4"));
         Bar bar2Staff2 = Bar.of();
-        bar1Staff2.add(Voice.of("F'/2 G'/2 Ab'/2 Bb'/2 C'' C''"));
+        bar2Staff2.add(Voice.of("F'/2 G'/2 Ab'/2 Bb'/2 C'' C''"));
 
         expected.add(part);
         part.addAll(List.of(staff1, staff2));
