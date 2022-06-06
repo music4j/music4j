@@ -20,7 +20,9 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
         for (int i = 0; i < numberOfVoices; i++) {
             voices.add(new StringBuilder().append(String.format("Voice { %n")));
         }
+        int barNumber = 0;
         for (Bar bar : this) {
+            barNumber++;
             for (int i = 0; i < numberOfVoices; i++) {
                 StringBuilder voiceBuilder = voices.get(i);
                 if (i < bar.size()) {
@@ -28,7 +30,7 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
                 } else {
                     voiceBuilder.append(String.format("Z%s ", bar.length()));
                 }
-                if(i < bar.size()-1) {
+                if(barNumber < size()-1) {
                     voiceBuilder.append(String.format(" |%n"));
                 }
             }

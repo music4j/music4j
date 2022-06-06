@@ -244,6 +244,12 @@ class NoteTest {
         }
 
         @Test
+        void parseSingleNoteWithDot() {
+            Note note = Note.of("C#'2..");
+            assertEquals(Note.of(BarTime.of(7,2), Collections.singleton(Pitch.of("C#'"))), note);
+        }
+
+        @Test
         void parseSingleNoteRandomDuration() {
             Note note = Note.of("C#'7/5");
             assertEquals(Note.of(BarTime.of(7, 5), Collections.singleton(Pitch.of("C#'"))), note);

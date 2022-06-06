@@ -41,28 +41,6 @@
  ;
 
  /**
- * A bar can have multiple baritem which are distributed to the voice and frame. All attributes are
- * routed to the same frame whereas notes are separated by the '&' sign
- */
- bar
- :
-     barSlice
-     (
-         '&' barSlice
-     )*
- ;
-
- barSlice
- :
-     barItem*
- ;
-
- barItem
- :
-     note # barItemNote
- ;
-
- /**
  * Rule is only used for the static factory of the Voice object.
  */
  voice
@@ -72,9 +50,9 @@
 
  note
  :
-     pitch duration? noteSuffix* # noteSingle
-     | '[' pitch+ ']' duration? noteSuffix* # noteChord
-     | 'R' duration? # noteRest
+     pitch duration? DOT* noteSuffix* # noteSingle
+     | '[' pitch+ ']' duration? DOT* noteSuffix* # noteChord
+     | 'R' duration? DOT* # noteRest
  ;
 
  /**
@@ -216,6 +194,8 @@
      '0'
      | [1-9] [0-9]*
  ;
+
+ DOT: '.';
 
  /*
  * ---------------------------------------------Comments and Whitespace handling---------------------------------------------

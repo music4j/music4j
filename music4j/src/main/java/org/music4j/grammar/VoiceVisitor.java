@@ -6,6 +6,8 @@ import org.music4j.Voice;
 import org.music4j.grammar.gen.RubatoParser.NoteContext;
 import org.music4j.grammar.gen.RubatoParser.VoiceContext;
 import org.music4j.grammar.token.DefaultDuration;
+import org.music4j.grammar.token.NoteTieEnd;
+import org.music4j.grammar.token.NoteTieStart;
 import org.music4j.grammar.token.OctaveMode;
 import org.music4j.grammar.token.TimeMode;
 
@@ -15,6 +17,8 @@ public class VoiceVisitor extends AbstractVisitor {
         add(new OctaveMode(), false);
         add(new TimeMode(), false);
         add(new DefaultDuration(), BarTime.of(1));
+        add(new NoteTieEnd(), false);
+        add(new NoteTieStart(), false);
     }
 
     public VoiceVisitor(StaffVisitor staffVisitor) {

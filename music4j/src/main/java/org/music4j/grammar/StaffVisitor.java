@@ -16,6 +16,8 @@ import org.music4j.grammar.gen.RubatoParser.StaffVoiceEmptyContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceNonEmptyContext;
 import org.music4j.grammar.token.DefaultDuration;
 import org.music4j.grammar.token.DefaultOctave;
+import org.music4j.grammar.token.NoteTieEnd;
+import org.music4j.grammar.token.NoteTieStart;
 import org.music4j.grammar.token.OctaveMode;
 import org.music4j.grammar.token.PreviousStep;
 import org.music4j.grammar.token.TimeMode;
@@ -29,6 +31,8 @@ public class StaffVisitor extends AbstractVisitor {
         add(new DefaultDuration(), BarTime.of(1));
         add(new PreviousStep(), Step.C);
         add(new DefaultOctave(), Octave.SMALL);
+        add(new NoteTieStart(), false);
+        add(new NoteTieEnd(), false);
     }
 
     public StaffVisitor(PartVisitor partVisitor) {
@@ -36,6 +40,8 @@ public class StaffVisitor extends AbstractVisitor {
         add(new DefaultDuration(), BarTime.of(1));
         add(new PreviousStep(), Step.C);
         add(new DefaultOctave(), Octave.SMALL);
+        add(new NoteTieStart(), false);
+        add(new NoteTieEnd(), false);
     }
 
     @Override
@@ -46,6 +52,7 @@ public class StaffVisitor extends AbstractVisitor {
         for (StaffVoiceContext staffVoiceCtx : ctx.staffVoice()) {
             set(PreviousStep.class, Step.C);
             set(DefaultOctave.class, Octave.SMALL);
+            set(NoteTieStart.class, false);
             @SuppressWarnings("unchecked")
             List<Voice> listOfVoice = (List<Voice>) visit(staffVoiceCtx);
             for (int i = 0; i < listOfVoice.size(); i++) {
