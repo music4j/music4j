@@ -10,7 +10,7 @@ import org.music4j.simple.ArrayListScore;
  * A Score is an ordered list of Parts. This interface defines a root object for
  * all musical objects in the api.
  */
-public interface Score extends List<Part>{
+public interface Score extends List<Part> {
 
     /**
      * Returns an empty Score.

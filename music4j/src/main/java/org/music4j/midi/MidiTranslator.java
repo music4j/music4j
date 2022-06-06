@@ -109,13 +109,13 @@ public class MidiTranslator {
             for (Pitch p : note) {
 
                 // Switch note on
-                if(!note.isTieEnd()) {
+                if (!note.isTieEnd()) {
                     MidiMessage noteOn = new ShortMessage(ShortMessage.NOTE_ON, 0, p.asInt(), 64);
                     track.add(new MidiEvent(noteOn, timeStart));
                 }
 
                 // Switch note off
-                if(!note.isTieStart()) {
+                if (!note.isTieStart()) {
                     MidiMessage noteOff = new ShortMessage(ShortMessage.NOTE_OFF, 0, p.asInt(), 0);
                     track.add(new MidiEvent(noteOff, timeEnd));
                 }
