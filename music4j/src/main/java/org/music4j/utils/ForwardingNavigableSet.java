@@ -4,6 +4,7 @@ import java.util.AbstractSet;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NavigableSet;
+import java.util.Objects;
 import java.util.SortedSet;
 
 /**
@@ -16,11 +17,13 @@ public class ForwardingNavigableSet<E> extends AbstractSet<E> implements Navigab
     private final NavigableSet<E> set;
 
     public ForwardingNavigableSet(NavigableSet<E> set) {
+        Objects.requireNonNull(set);
         this.set = set;
     }
 
     @Override
     public boolean add(E e) {
+        Objects.requireNonNull(e);
         return set.add(e);
     }
 
@@ -41,21 +44,25 @@ public class ForwardingNavigableSet<E> extends AbstractSet<E> implements Navigab
 
     @Override
     public E lower(E e) {
+        Objects.requireNonNull(e);
         return set.lower(e);
     }
 
     @Override
     public E floor(E e) {
+        Objects.requireNonNull(e);
         return set.floor(e);
     }
 
     @Override
     public E ceiling(E e) {
+        Objects.requireNonNull(e);
         return set.ceiling(e);
     }
 
     @Override
     public E higher(E e) {
+        Objects.requireNonNull(e);
         return set.higher(e);
     }
 
@@ -81,31 +88,39 @@ public class ForwardingNavigableSet<E> extends AbstractSet<E> implements Navigab
 
     @Override
     public NavigableSet<E> subSet(E fromElement, boolean fromInclusive, E toElement, boolean toInclusive) {
+        Objects.requireNonNull(fromElement);
+        Objects.requireNonNull(toElement);
         return set.subSet(fromElement, fromInclusive, toElement, toInclusive);
     }
 
     @Override
     public NavigableSet<E> headSet(E toElement, boolean inclusive) {
+        Objects.requireNonNull(toElement);
         return set.headSet(toElement, inclusive);
     }
 
     @Override
     public NavigableSet<E> tailSet(E fromElement, boolean inclusive) {
+        Objects.requireNonNull(fromElement);
         return set.tailSet(fromElement, inclusive);
     }
 
     @Override
     public SortedSet<E> subSet(E fromElement, E toElement) {
+        Objects.requireNonNull(fromElement);
+        Objects.requireNonNull(toElement);
         return set.subSet(fromElement, toElement);
     }
 
     @Override
     public SortedSet<E> headSet(E toElement) {
+        Objects.requireNonNull(toElement);
         return set.headSet(toElement);
     }
 
     @Override
     public SortedSet<E> tailSet(E fromElement) {
+        Objects.requireNonNull(fromElement);
         return set.tailSet(fromElement);
     }
 
