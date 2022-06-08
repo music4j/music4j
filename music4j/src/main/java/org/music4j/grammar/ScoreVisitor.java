@@ -14,10 +14,9 @@ import org.music4j.grammar.token.TimeMode;
 
 public class ScoreVisitor extends AbstractVisitor {
 
+
     public ScoreVisitor() {
-        // Set default configurations
-        add(new OctaveMode(), false);
-        add(new TimeMode(), false);
+        super(null);
     }
 
     /**
@@ -74,5 +73,10 @@ public class ScoreVisitor extends AbstractVisitor {
         set(OctaveMode.class, false);
         set(TimeMode.class, false);
         return super.visitModeTimeAndOctaveAbsolute(ctx);
+    }
+
+    @Override
+    protected Scope scope() {
+        return Scope.SCORE;
     }
 }

@@ -22,11 +22,14 @@ import org.music4j.grammar.token.PreviousStep;
 public class PitchVisitor extends AbstractVisitor {
 
     public PitchVisitor() {
-        add(new OctaveMode(), false);
+        this(null);
     }
 
     public PitchVisitor(NoteVisitor noteVisitor) {
         super(noteVisitor);
+        add(new OctaveMode(), Scope.SCORE);
+        add(new PreviousStep(), Scope.STAFFVOICE);
+        add(new DefaultOctave(), Scope.STAFFVOICE);
     }
 
     @Override
@@ -90,6 +93,11 @@ public class PitchVisitor extends AbstractVisitor {
     @Override
     public Alter visitAlterSharp(AlterSharpContext ctx) {
         return Alter.SHARP;
+    }
+
+    @Override
+    protected Scope scope() {
+        return Scope.PITCH;
     }
 
 }

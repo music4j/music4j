@@ -4,8 +4,10 @@ import org.music4j.Pitch.Octave;
 
 public class DefaultOctave extends AbstractParserToken<Octave> {
 
-    public DefaultOctave() {
-        accept(Octave.SMALL);
+    @Override
+    protected Octave defaultValue() {
+        return Octave.SMALL;
     }
+
 
 }

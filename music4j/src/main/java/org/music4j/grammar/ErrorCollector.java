@@ -22,6 +22,8 @@ public class ErrorCollector extends BaseErrorListener {
 
     public void throwErrors() throws ParseException {
         if(!errors.isEmpty()) {
+            int messageLength = errorMessage.length();
+            errorMessage.delete(messageLength - 2, messageLength);
             throw new ParseException(errorMessage.toString());
         }
     }

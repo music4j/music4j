@@ -1,47 +1,21 @@
 package org.music4j.grammar;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.music4j.Bar;
-import org.music4j.BarTime;
 import org.music4j.Staff;
 import org.music4j.Voice;
-import org.music4j.Pitch.Octave;
-import org.music4j.Pitch.Step;
 import org.music4j.grammar.gen.RubatoParser.StaffContext;
 import org.music4j.grammar.gen.RubatoParser.StaffVoiceContext;
-import org.music4j.grammar.gen.RubatoParser.StaffVoiceEmptyContext;
-import org.music4j.grammar.gen.RubatoParser.StaffVoiceNonEmptyContext;
-import org.music4j.grammar.token.DefaultDuration;
-import org.music4j.grammar.token.DefaultOctave;
-import org.music4j.grammar.token.NoteTieEnd;
-import org.music4j.grammar.token.NoteTieStart;
-import org.music4j.grammar.token.OctaveMode;
-import org.music4j.grammar.token.PreviousStep;
-import org.music4j.grammar.token.TimeMode;
 
 public class StaffVisitor extends AbstractVisitor {
 
     public StaffVisitor() {
-        // Set default configurations
-        add(new OctaveMode(), false);
-        add(new TimeMode(), false);
-        add(new DefaultDuration(), BarTime.of(1));
-        add(new PreviousStep(), Step.C);
-        add(new DefaultOctave(), Octave.SMALL);
-        add(new NoteTieStart(), false);
-        add(new NoteTieEnd(), false);
+        this(null);
     }
 
     public StaffVisitor(PartVisitor partVisitor) {
         super(partVisitor);
-        add(new DefaultDuration(), BarTime.of(1));
-        add(new PreviousStep(), Step.C);
-        add(new DefaultOctave(), Octave.SMALL);
-        add(new NoteTieStart(), false);
-        add(new NoteTieEnd(), false);
     }
 
     @Override
@@ -50,11 +24,9 @@ public class StaffVisitor extends AbstractVisitor {
 
         // Each staff voices represents a single voice which spans over the whole staff
         for (StaffVoiceContext staffVoiceCtx : ctx.staffVoice()) {
-            set(PreviousStep.class, Step.C);
-            set(DefaultOctave.class, Octave.SMALL);
-            set(NoteTieStart.class, false);
-            @SuppressWarnings("unchecked")
-            List<Voice> listOfVoice = (List<Voice>) visit(staffVoiceCtx);
+
+            StaffVoiceVisitor staffVoiceVisitor = new StaffVoiceVisitor(this);
+            List<Voice> listOfVoice = staffVoiceVisitor.visitStaffVoice(staffVoiceCtx);
             for (int i = 0; i < listOfVoice.size(); i++) {
                 if (i + 1 > staff.size()) {
                     Bar bar = Bar.of();
@@ -70,15 +42,7 @@ public class StaffVisitor extends AbstractVisitor {
     }
 
     @Override
-    public List<Voice> visitStaffVoiceEmpty(StaffVoiceEmptyContext ctx) {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public List<Voice> visitStaffVoiceNonEmpty(StaffVoiceNonEmptyContext ctx) {
-        return ctx.voice().stream().map(voiceCtx -> {
-            VoiceVisitor voiceVisitor = new VoiceVisitor(this);
-            return voiceVisitor.visitVoice(voiceCtx);
-        }).collect(Collectors.toList());
+    protected Scope scope() {
+        return Scope.STAFF;
     }
 }
