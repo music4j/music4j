@@ -54,22 +54,8 @@ public abstract class AbstractVisitor extends RubatoBaseVisitor<Object> implemen
         if (token != null) {
             token.accept(value);
         } else {
-            try {
-                Constructor<T> constructor = key.getConstructor();
-                token = constructor.newInstance();
-                token.accept(value);
-                add(token, scope());
-            } catch (NoSuchMethodException | SecurityException e) {
-                throw new RuntimeException();
-            } catch (InstantiationException e) {
-                throw new RuntimeException();
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException();
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException();
-            } catch (InvocationTargetException e) {
-                throw new RuntimeException();
-            }
+            add(key);
+            set(key, value);
         }
     }
 
@@ -83,19 +69,25 @@ public abstract class AbstractVisitor extends RubatoBaseVisitor<Object> implemen
      * @param token
      * @param scope
      */
-    protected <E, T extends AbstractParserToken<E>> void add(T token, Scope scope) {
+    protected <T extends AbstractParserToken<?>> void add(Class<T> key, Scope scope) {
         int levelDifference = scope().getLevel() - scope.getLevel();
         if (levelDifference < 0) {
-            throw new RuntimeException("The token must be added on a higgher level.");
-        } else if (levelDifference == 0 || parent == null) {
-            add(token);
+            throw new RuntimeException("The token must be added on a higgher level. Or sibling visitor.");
+        } else if (scope == scope() || parent == null) {
+            add(key);
         } else {
-            parent.add(token, scope);
+            parent.add(key, scope);
         }
     }
 
-    protected <E, T extends AbstractParserToken<E>> void add(T token) {
-        container.add(token);
+    protected <T extends AbstractParserToken<?>> void add(Class<T> key) {
+        try {
+            Constructor<T> constructor = key.getConstructor();
+            T token = constructor.newInstance();
+            container.add(token);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Reflective creation of the token failed.");
+        }
     }
 
     protected <E, T extends AbstractParserToken<E>> void remove(Class<T> key) {

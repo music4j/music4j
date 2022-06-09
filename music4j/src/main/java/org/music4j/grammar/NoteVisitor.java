@@ -20,10 +20,10 @@ public class NoteVisitor extends AbstractVisitor {
 
     public NoteVisitor(VoiceVisitor voiceVisitor) {
         super(voiceVisitor);
-        add(new DefaultDuration(), Scope.STAFFVOICE);
-        add(new TimeMode(), Scope.SCORE);
-        add(new NoteTieEnd(), Scope.STAFFVOICE);
-        add(new NoteTieStart(), Scope.STAFFVOICE);
+        add(DefaultDuration.class, Scope.STAFFVOICE);
+        add(TimeMode.class, Scope.SCORE);
+        add(NoteTieEnd.class, Scope.STAFFVOICE);
+        add(NoteTieStart.class, Scope.STAFFVOICE);
     }
 
     @Override

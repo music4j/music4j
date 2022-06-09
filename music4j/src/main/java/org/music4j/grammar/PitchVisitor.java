@@ -27,9 +27,9 @@ public class PitchVisitor extends AbstractVisitor {
 
     public PitchVisitor(NoteVisitor noteVisitor) {
         super(noteVisitor);
-        add(new OctaveMode(), Scope.SCORE);
-        add(new PreviousStep(), Scope.STAFFVOICE);
-        add(new DefaultOctave(), Scope.STAFFVOICE);
+        add(OctaveMode.class, Scope.SCORE);
+        add(PreviousStep.class, Scope.STAFFVOICE);
+        add(DefaultOctave.class, Scope.STAFFVOICE);
     }
 
     @Override
