@@ -1,7 +1,6 @@
 package org.music4j.grammar;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 
 import org.music4j.grammar.gen.RubatoBaseVisitor;
 import org.music4j.grammar.gen.RubatoVisitor;
