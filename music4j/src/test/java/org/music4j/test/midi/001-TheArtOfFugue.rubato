@@ -11,28 +11,57 @@ Score {
                 A''2 D |
                 C2 A |
                 G#2 A1 B |
-                C5/2 D/2 C Bb |
-                A1 D2 C#1 |
-                D/2 A C3/2 A/2 Bb~ |
-                Bb/2 E, A3
+                C2~ C/2 D C Bb |
+                A/2 D, D'2 C#1 |
+                D/2 A C1. A/2 Bb~ |
+                Bb/2 E, A3~ |
+                A/2 C1 B/2 C2~ |
+                C/2 D, C'1~ C/2 A B~ |
+                B A/2 G# A2 |
+                B2 C1 D |
+                G,/2 Bb A1~ A/2 Bb A G
             }
 
             Voice {
                 D'2 A' |
                 F D |
                 C# D1 E |
-                F5/2 G/2 F E |
+                F2~ F/2 G F E |
                 D1 E F G |
                 A1 A,/2 B C A F'1~ |
-                F/2 B, E3/2 F/2 E D |
+                F/2 B, E1~ E/2 F E D |
                 E1 F# G2~ |
-                G/2 D F1 E2 |
-                D3/2 E/2 F3/2 D/2 |
-                G3/2 G/2 F E D C#
+                G1 F E2 |
+                D1. E/2 F1. D/2 |
+                G1. G/2 F E D C# |
+                D1 G2 C,1 |
+                F1. E/2 F1. G#,/2 |
+                E'2. D/2 C |
+                D F E D C1 R |
             }
         }
 
         Staff {
+
+            Voice {
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                R4 |
+                A'2 D |
+                C A |
+                G#2 A1 B |
+                C2~ C/2 D C Bb
+            }
+
             Voice {
                 R4 |
                 R4 |
@@ -44,7 +73,13 @@ Score {
                 R4 |
                 D2 A' |
                 F D |
-                C#2 D1 E
+                C#2 D1 E |
+                F2~ F/2 G F E |
+                D2 R2 |
+                R1 A/2 B C A F'1~ |
+                F/2 B, E1~ E/2 F E D |
+                E G F# A G2 |
+                D2. E/2 D |
             }
         }
     }
