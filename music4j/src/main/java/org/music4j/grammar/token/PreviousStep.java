@@ -4,8 +4,9 @@ import org.music4j.Pitch.Step;
 
 public class PreviousStep extends AbstractParserToken<Step> {
 
-    public PreviousStep() {
-        accept(Step.C);
+    @Override
+    protected Step defaultValue() {
+        return Step.C;
     }
 
 }

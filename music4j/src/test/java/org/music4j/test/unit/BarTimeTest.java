@@ -273,6 +273,7 @@ class BarTimeTest {
         BarTime first = BarTime.of(4);
         assertThrows(NullPointerException.class, () -> BarTime.max(first, null));
     }
+
     /**
      * min gives back the minimal Measurable
      */
@@ -288,7 +289,7 @@ class BarTimeTest {
      */
     @Test
     void minBothEqual() {
-        BarTime first =  BarTime.of(4);
+        BarTime first = BarTime.of(4);
         BarTime second = BarTime.of(4);
         assertEquals(first, BarTime.min(first, second));
     }
@@ -332,21 +333,20 @@ class BarTimeTest {
         @Test
         void parseInvertedInt() {
             BarTime time = BarTime.of("/3");
-            assertEquals(BarTime.of(1,3), time);
+            assertEquals(BarTime.of(1, 3), time);
         }
 
         @Test
         void parseFraction() {
             BarTime time = BarTime.of("7/3");
-            assertEquals(BarTime.of(7,3), time);
+            assertEquals(BarTime.of(7, 3), time);
         }
 
         @Test
         void parseThrowsException() {
-            IllegalArgumentException e = assertThrows(IllegalArgumentException.class ,() -> BarTime.of("1//2"));
-            assertEquals("org.music4j.grammar.ParseException: line 1: 2 extraneous input '/' expecting INT \r\n"
-                    + ""
-, e.getMessage());
+            IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> BarTime.of("1//2"));
+            assertEquals("org.music4j.grammar.ParseException: line 1: 2 extraneous input '/' expecting INT",
+                    e.getMessage());
         }
     }
 }

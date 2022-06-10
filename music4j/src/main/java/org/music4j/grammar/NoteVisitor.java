@@ -10,21 +10,25 @@ import org.music4j.grammar.gen.RubatoParser.NoteSuffixTieContext;
 import org.music4j.grammar.token.DefaultDuration;
 import org.music4j.grammar.token.NoteTieEnd;
 import org.music4j.grammar.token.NoteTieStart;
-import org.music4j.grammar.token.OctaveMode;
 import org.music4j.grammar.token.TimeMode;
 
 public class NoteVisitor extends AbstractVisitor {
 
     public NoteVisitor() {
-        add(new OctaveMode(), false);
-        add(new TimeMode(), false);
-        add(new DefaultDuration(), BarTime.of(1));
-        add(new NoteTieEnd(), false);
-        add(new NoteTieStart(), false);
+        this(null);
     }
 
     public NoteVisitor(VoiceVisitor voiceVisitor) {
         super(voiceVisitor);
+        add(DefaultDuration.class, Scope.STAFFVOICE);
+        add(TimeMode.class, Scope.SCORE);
+        add(NoteTieEnd.class, Scope.STAFFVOICE);
+        add(NoteTieStart.class, Scope.STAFFVOICE);
+    }
+
+    @Override
+    protected Scope scope() {
+        return Scope.NOTE;
     }
 
     public Note visitNote(NoteContext ctx) {

@@ -1,5 +1,6 @@
 package org.music4j.grammar.token;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -10,6 +11,10 @@ public abstract class AbstractParserToken<T> implements Supplier<T>, Consumer<T>
 
     private T tokenValue;
 
+    public AbstractParserToken() {
+        tokenValue = Objects.requireNonNull(defaultValue());
+    }
+
     @Override
     public void accept(T t) {
         tokenValue = t;
@@ -19,4 +24,6 @@ public abstract class AbstractParserToken<T> implements Supplier<T>, Consumer<T>
     public T get() {
         return tokenValue;
     }
+
+    protected abstract T defaultValue();
 }

@@ -1,5 +1,7 @@
 package org.music4j.grammar;
 
+import java.lang.reflect.Constructor;
+
 import org.music4j.grammar.gen.RubatoBaseVisitor;
 import org.music4j.grammar.gen.RubatoVisitor;
 import org.music4j.grammar.token.AbstractParserToken;
@@ -13,11 +15,6 @@ public abstract class AbstractVisitor extends RubatoBaseVisitor<Object> implemen
     private final Container<AbstractParserToken<?>> container;
 
     private final AbstractVisitor parent;
-
-    public AbstractVisitor() {
-        parent = null;
-        container = new Container<>();
-    }
 
     public AbstractVisitor(AbstractVisitor parent) {
         this.parent = parent;
@@ -48,25 +45,48 @@ public abstract class AbstractVisitor extends RubatoBaseVisitor<Object> implemen
 
     protected <E, T extends AbstractParserToken<E>> void set(Class<T> key, E value) {
         T token = container.get(key);
-        if(token == null && parent != null) {
-           parent.set(key, value);
-           //Exit method here if no token is found with this visitor.
-           return;
+        if (token == null && parent != null) {
+            parent.set(key, value);
+            // Exit method here if no token is found with this visitor.
+            return;
         }
         if (token != null) {
             token.accept(value);
         } else {
-            throw new RuntimeException("No token found");
+            add(key);
+            set(key, value);
         }
     }
 
-    protected <E, T extends AbstractParserToken<E>> void add(T token, E value) {
-        token.accept(value);
-        add(token);
+    /**
+     * Adds the token in the specified scope. Meaning that if the token is to be
+     * added in a lower scope it will be added to a appropriate parent visitor if
+     * possible or the highest available level.
+     *
+     * @param <E>
+     * @param <T>
+     * @param token
+     * @param scope
+     */
+    protected <T extends AbstractParserToken<?>> void add(Class<T> key, Scope scope) {
+        int levelDifference = scope().getLevel() - scope.getLevel();
+        if (levelDifference < 0) {
+            throw new RuntimeException("The token must be added on a higgher level. Or sibling visitor.");
+        } else if (scope == scope() || parent == null) {
+            add(key);
+        } else {
+            parent.add(key, scope);
+        }
     }
 
-    protected <E, T extends AbstractParserToken<E>> void add(T token) {
-        container.add(token);
+    protected <T extends AbstractParserToken<?>> void add(Class<T> key) {
+        try {
+            Constructor<T> constructor = key.getConstructor();
+            T token = constructor.newInstance();
+            container.add(token);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException("Reflective creation of the token failed.");
+        }
     }
 
     protected <E, T extends AbstractParserToken<E>> void remove(Class<T> key) {
@@ -75,5 +95,36 @@ public abstract class AbstractVisitor extends RubatoBaseVisitor<Object> implemen
 
     protected AbstractVisitor getParent() {
         return parent;
+    }
+
+    protected abstract Scope scope();
+
+    public enum Scope {
+
+        SCORE(0),
+
+        PART(1),
+
+        STAFF(2),
+
+        STAFFVOICE(3),
+
+        BARVOICE(4),
+
+        NOTE(5),
+
+        PITCH(6),
+
+        TIME(6);
+
+        private final int level;
+
+        private Scope(int i) {
+            level = i;
+        }
+
+        public int getLevel() {
+            return level;
+        }
     }
 }

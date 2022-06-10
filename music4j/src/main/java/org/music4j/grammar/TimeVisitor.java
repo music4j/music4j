@@ -10,6 +10,7 @@ import org.music4j.grammar.gen.RubatoParser.DurationInvertedIntegerContext;
 public class TimeVisitor extends AbstractVisitor {
 
     public TimeVisitor() {
+        this(null);
     }
 
     public TimeVisitor(NoteVisitor noteVisitor) {
@@ -39,4 +40,8 @@ public class TimeVisitor extends AbstractVisitor {
         return BarTime.of(Integer.parseInt(num.getText()));
     }
 
+    @Override
+    protected Scope scope() {
+        return Scope.TIME;
+    }
 }
