@@ -9,6 +9,7 @@ import org.music4j.Part;
 import org.music4j.Staff;
 import org.music4j.Voice;
 import org.music4j.utils.ForwardingList;
+import org.music4j.utils.StringOutput;
 
 public class ArrayListPart extends ForwardingList<Staff> implements Part {
 
@@ -29,5 +30,14 @@ public class ArrayListPart extends ForwardingList<Staff> implements Part {
     @Override
     public Note get(int staffNumber, int barNumber, int voiceNumber, BarTime time) {
         return get(staffNumber, barNumber, voiceNumber).get(time);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Part { %n"));
+        stream().forEach(staff -> sb.append(StringOutput.indent(staff.toString(), 4)));
+        sb.append(String.format("} %n"));
+        return sb.toString();
     }
 }

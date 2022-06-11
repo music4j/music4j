@@ -22,6 +22,7 @@ import org.music4j.grammar.ScoreVisitor;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingList;
+import org.music4j.utils.StringOutput;
 
 /**
  * Simple implementation of a Score based on an ArrayList.
@@ -90,5 +91,14 @@ public class ArrayListScore extends ForwardingList<Part> implements Score {
     @Override
     public Note get(int partNumber, int staffNumber, int barNumber, int voiceNumber, BarTime time) {
         return get(partNumber, staffNumber, barNumber, voiceNumber).get(time);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("Score { %n"));
+        stream().forEach(part -> sb.append(StringOutput.indent(part.toString(), 4)));
+        sb.append(String.format("} %n"));
+        return sb.toString();
     }
 }

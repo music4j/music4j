@@ -12,6 +12,7 @@ public class LocalResourcePlayer {
     public static void main(String[] args) throws IOException, MidiUnavailableException {
         File rubatoFile = new File(args[0]);
         Score score = Score.readFile(rubatoFile);
+        System.out.println(score.toString());
         MidiPlayer player = new MidiPlayer();
         player.play(score);
     }

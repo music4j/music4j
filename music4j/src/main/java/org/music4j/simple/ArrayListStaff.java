@@ -9,6 +9,7 @@ import org.music4j.Note;
 import org.music4j.Staff;
 import org.music4j.Voice;
 import org.music4j.utils.ForwardingList;
+import org.music4j.utils.StringOutput;
 
 public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
 
@@ -31,7 +32,7 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
         int numberOfVoices = stream().map(Bar::size).max(Integer::compareTo).orElse(1);
         List<StringBuilder> voices = new ArrayList<>();
         for (int i = 0; i < numberOfVoices; i++) {
-            voices.add(new StringBuilder().append(String.format("Voice { %n")));
+            voices.add(new StringBuilder().append(String.format("Voice { %n    ")));
         }
         int barNumber = 0;
         for (Bar bar : this) {
@@ -43,16 +44,16 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
                 } else {
                     voiceBuilder.append(String.format("Z%s ", bar.length()));
                 }
-                if(barNumber < size()-1) {
+                if(barNumber < size()) {
                     voiceBuilder.append(String.format(" |%n"));
                 }
             }
         }
-        voices.forEach(sb -> sb.append(String.format("} %n")));
+        voices.forEach(sb -> sb.append(String.format("%n} %n")));
 
         StringBuilder staffBuilder = new StringBuilder();
         staffBuilder.append(String.format("Staff { %n"));
-        voices.forEach(staffBuilder::append);
+        voices.forEach(voice -> staffBuilder.append(StringOutput.indent(voice.toString(), 4)));
         staffBuilder.append(String.format("} %n"));
 
         return staffBuilder.toString();

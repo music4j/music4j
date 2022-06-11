@@ -149,10 +149,12 @@ public final class TreeMapVoice extends ForwardingNavigableMap<BarTime, Note> im
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (Entry<BarTime, Note> entry : entrySet()) {
-            sb.append(String.format("%s ", entry.getValue()));
+        if(!isEmpty()) {
+            for (Entry<BarTime, Note> entry : entrySet()) {
+                sb.append(String.format("%s ", entry.getValue()));
+            }
+            sb.replace(sb.length() - 1, sb.length(), "");
         }
-        sb.replace(sb.length() - 1, sb.length(), "");
         return sb.toString();
     }
 }
