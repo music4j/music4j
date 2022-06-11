@@ -4,13 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.music4j.Bar;
+import org.music4j.BarTime;
+import org.music4j.Note;
 import org.music4j.Staff;
+import org.music4j.Voice;
 import org.music4j.utils.ForwardingList;
 
 public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
 
     public ArrayListStaff() {
         super(new ArrayList<>());
+    }
+
+    @Override
+    public Voice get(int barNumber, int voiceNumber) {
+        return get(voiceNumber).get(voiceNumber);
+    }
+
+    @Override
+    public Note get(int barNumber, int voiceNumber, BarTime time) {
+        return get(barNumber, voiceNumber).get(time);
     }
 
     @Override
@@ -44,4 +57,5 @@ public class ArrayListStaff extends ForwardingList<Bar> implements Staff {
 
         return staffBuilder.toString();
     }
+
 }

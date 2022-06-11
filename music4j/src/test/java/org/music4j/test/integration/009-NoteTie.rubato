@@ -1,0 +1,18 @@
+
+Score {
+    [MODE: relative]
+
+    Part {
+        Staff {
+            Voice{
+                G''2 C ~|
+                C B~
+            }
+
+            Voice{
+                E'4 |
+                D2~ D
+            }
+        }
+    }
+}

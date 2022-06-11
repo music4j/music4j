@@ -27,4 +27,13 @@ public interface Bar extends List<Voice> {
      * @return the length of the bar.
      */
     BarTime length();
+
+    /**
+     * Get the Note at the given time from the voice with
+     * the respective number.
+     *
+     * @param voiceNumber the number of the voice.
+     * @return the requested voice.
+     */
+    Note get(int voiceNumber, BarTime time);
 }

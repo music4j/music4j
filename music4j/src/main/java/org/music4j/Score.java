@@ -43,4 +43,49 @@ public interface Score extends List<Part> {
         return ArrayListScore.readFile(file);
     }
 
+    /**
+     * Gets the staffs with the given staffNumber from the part with the given
+     * partNumber.
+     *
+     * @param partNumber  the number of the part
+     * @param staffNumber the number of the staff
+     * @return the requested staff.
+     */
+    Staff get(int partNumber, int staffNumber);
+
+    /**
+     * Get the bar with the given barNumber form the staff with the given
+     * staffNumber and the part with the given partNumber.
+     *
+     * @param partNumber  the number of the part.
+     * @param staffNumber the number of the staff.
+     * @param barNumber   the number of the bar.
+     * @return the requested bar.
+     */
+    Bar get(int partNumber, int staffNumber, int barNumber);
+
+    /**
+     * Get the Voice with the given voiceNumber from the staff, part,and bar with
+     * the respective number.
+     *
+     * @param partNumber  the number of the part.
+     * @param staffNumber the number of the staff.
+     * @param barNumber   the number of the bar.
+     * @param voiceNumber the number of the voice.
+     * @return the requested voice.
+     */
+    Voice get(int partNumber, int staffNumber, int barNumber, int voiceNumber);
+
+    /**
+     * Get the Note at the given time from the staff, part, bar and Voice with
+     * the respective number.
+     *
+     * @param partNumber  the number of the part.
+     * @param staffNumber the number of the staff.
+     * @param barNumber   the number of the bar.
+     * @param voiceNumber the number of the voice.
+     * @return the requested voice.
+     */
+    Note get(int partNumber, int staffNumber, int barNumber, int voiceNumber, BarTime time);
+
 }

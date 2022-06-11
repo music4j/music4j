@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.music4j.Bar;
 import org.music4j.BarTime;
+import org.music4j.Note;
 import org.music4j.Voice;
 import org.music4j.utils.ForwardingList;
 
@@ -18,4 +19,8 @@ public class ArrayListBar extends ForwardingList<Voice> implements Bar {
         return stream().map(Voice::length).max(BarTime::compareTo).orElse(BarTime.ZERO);
     }
 
+    @Override
+    public Note get(int voiceNumber, BarTime time) {
+        return get(voiceNumber).get(time);
+    }
 }

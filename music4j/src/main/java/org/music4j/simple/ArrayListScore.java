@@ -9,8 +9,13 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
+import org.music4j.Bar;
+import org.music4j.BarTime;
+import org.music4j.Note;
 import org.music4j.Part;
 import org.music4j.Score;
+import org.music4j.Staff;
+import org.music4j.Voice;
 import org.music4j.grammar.ErrorCollector;
 import org.music4j.grammar.ParseException;
 import org.music4j.grammar.ScoreVisitor;
@@ -65,5 +70,25 @@ public class ArrayListScore extends ForwardingList<Part> implements Score {
         } catch (ParseException e) {
             throw new IllegalArgumentException(e);
         }
+    }
+
+    @Override
+    public Staff get(int partNumber, int staffNumber) {
+        return get(partNumber).get(staffNumber);
+    }
+
+    @Override
+    public Bar get(int partNumber, int staffNumber, int barNumber) {
+        return get(partNumber, staffNumber).get(barNumber);
+    }
+
+    @Override
+    public Voice get(int partNumber, int staffNumber, int barNumber, int voiceNumber) {
+        return get(partNumber, staffNumber, barNumber).get(voiceNumber);
+    }
+
+    @Override
+    public Note get(int partNumber, int staffNumber, int barNumber, int voiceNumber, BarTime time) {
+        return get(partNumber, staffNumber, barNumber, voiceNumber).get(time);
     }
 }

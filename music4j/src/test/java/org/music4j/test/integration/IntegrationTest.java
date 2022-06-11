@@ -2,6 +2,7 @@ package org.music4j.test.integration;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.music4j.Bar;
+import org.music4j.BarTime;
 import org.music4j.Part;
 import org.music4j.Score;
 import org.music4j.Staff;
@@ -158,5 +160,19 @@ class IntegrationTest {
         staff2.addAll(List.of(bar1Staff2, bar2Staff2));
 
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Score with relative time mode parsing
+     */
+    @Test
+    void noteTie() throws IOException, URISyntaxException {
+        URL filePath = getClass().getResource("009-NoteTie.rubato");
+        File file = new File(filePath.toURI());
+        Score actual = Score.readFile(file);
+        Voice voice1Bar1 = actual.get(0, 0, 0, 0);
+        Voice voice1Bar2 = actual.get(0, 0, 1, 0);
+        assertTrue(voice1Bar1.get(BarTime.of(2)).isTieStart());
+        assertTrue(voice1Bar2.get(BarTime.ZERO).isTieEnd());
     }
 }
