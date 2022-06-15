@@ -1,0 +1,4 @@
+
+time(t) ::= "<t>"
+
+pitch(p) ::= "<p.step>"
