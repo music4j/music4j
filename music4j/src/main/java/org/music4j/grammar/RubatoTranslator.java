@@ -4,6 +4,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.music4j.BarTime;
+import org.music4j.Note;
+import org.music4j.Pitch;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
@@ -22,4 +24,15 @@ public class RubatoTranslator {
         return template.render();
     }
 
+    public String translatePitch(Pitch pitch) {
+        ST template = groupFile.getInstanceOf("pitch");
+        template.add("p", pitch);
+        return template.render();
+    }
+
+    public String translateNote(Note note) {
+        ST template = groupFile.getInstanceOf("note");
+        template.add("n", note);
+        return template.render();
+    }
 }

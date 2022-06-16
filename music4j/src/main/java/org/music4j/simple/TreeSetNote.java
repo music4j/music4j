@@ -15,6 +15,7 @@ import org.music4j.Pitch;
 import org.music4j.grammar.ErrorCollector;
 import org.music4j.grammar.NoteVisitor;
 import org.music4j.grammar.ParseException;
+import org.music4j.grammar.RubatoTranslator;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 import org.music4j.utils.ForwardingNavigableSet;
@@ -23,6 +24,8 @@ import org.music4j.utils.ForwardingNavigableSet;
  * Simple implementation for the note interface based on a TreeSet.
  */
 public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements Note {
+
+    private static final RubatoTranslator TRANSLATOR = new RubatoTranslator();
 
     private final BarTime duration;
 
@@ -199,20 +202,6 @@ public final class TreeSetNote extends ForwardingNavigableSet<Pitch> implements 
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        if (isEmpty()) {
-            sb.append("R");
-        } else if (size() == 1) {
-            sb.append(first());
-        } else {
-            sb.append("[");
-            stream().forEach(p -> sb.append(String.format(" %s", p)));
-            sb.append("]");
-            sb.replace(1, 2, "");
-        }
-        if (!duration.equals(BarTime.of(1))) {
-            sb.append(duration);
-        }
-        return sb.toString();
+        return TRANSLATOR.translateNote(this);
     }
 }

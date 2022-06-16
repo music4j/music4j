@@ -43,6 +43,11 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
     public static final BarTime ZERO = BarTime.of(0);
 
     /**
+     * BarTime of 0/1
+     */
+    public static final BarTime QUARTER = BarTime.of(1);
+
+    /**
      * The maximal value of any BarTime
      */
     public static final BarTime MAX = BarTime.of(Integer.MAX_VALUE);
@@ -293,6 +298,16 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
     @Override
     public BarTime getDuration() {
         return this;
+    }
+
+    /**
+     * Returns true if the time is equivalent to a quarter note. As default this
+     * time is not displayed in a parse.
+     *
+     * @return true if the time is equivalent to a quarter note.
+     */
+    public boolean isTrivial() {
+        return equals(QUARTER);
     }
 
     @Override

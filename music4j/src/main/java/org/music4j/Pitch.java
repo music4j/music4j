@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.music4j.grammar.ErrorCollector;
 import org.music4j.grammar.ParseException;
 import org.music4j.grammar.PitchVisitor;
+import org.music4j.grammar.RubatoTranslator;
 import org.music4j.grammar.gen.RubatoLexer;
 import org.music4j.grammar.gen.RubatoParser;
 
@@ -36,6 +37,11 @@ public final class Pitch implements Comparable<Pitch> {
      * @see #asMidiNumber()
      */
     private final static Comparator<Pitch> COMPARATOR = comparingInt(Pitch::asInt);
+    
+    /**
+     * Translator for to String output
+     */
+    private final static RubatoTranslator TRANSLATOR = new RubatoTranslator();
 
     /**
      * The step of the pitch
@@ -189,41 +195,7 @@ public final class Pitch implements Comparable<Pitch> {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(step);
-        appendAlter(sb);
-        appendOctave(sb);
-        return sb.toString();
-    }
-
-    private void appendOctave(StringBuilder sb) {
-        int rank = octave.rank();
-        for (int i = 0; i < Math.abs(rank); i++) {
-            if (Integer.signum(rank) == 1) {
-                sb.append("'");
-            } else if (Integer.signum(rank) == -1) {
-                sb.append(",");
-            }
-        }
-    }
-
-    private void appendAlter(StringBuilder sb) {
-        switch (alter) {
-        case DOUBLE_SHARP:
-            sb.append("x");
-            return;
-        case FLAT:
-            sb.append("b");
-            return;
-        case FLAT_FLAT:
-            sb.append("bb");
-            return;
-        case NATURAL:
-            return;
-        case SHARP:
-            sb.append("#");
-            return;
-        }
+        return TRANSLATOR.translatePitch(this);
     }
 
     /**

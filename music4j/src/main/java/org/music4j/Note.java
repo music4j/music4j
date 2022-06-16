@@ -64,6 +64,33 @@ public interface Note extends NavigableSet<Pitch>, Measurable {
     BarTime getDuration();
 
     /**
+     * Returns true if the note is a rest.
+     *
+     * @return true if the note is a rest.
+     */
+    default boolean isRest() {
+        return size() == 0;
+    }
+
+    /**
+     * Returns true if the note is a single note.
+     *
+     * @return true if the note is a single note.
+     */
+    default boolean isSingle() {
+        return size() == 1;
+    }
+
+    /**
+     * Returns true if the note is a chord.
+     *
+     * @return true if the note is a chord.
+     */
+    default boolean isChord() {
+        return size() > 1;
+    }
+
+    /**
      * Returns the type of the given note. Please note that the type gives only
      * indication on how the given note is displayed and has no effect on the
      * duration.
