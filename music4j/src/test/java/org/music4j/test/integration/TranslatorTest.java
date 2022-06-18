@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
-import org.music4j.grammar.RubatoTranslator;
+import org.music4j.rubato.RubatoTranslator;
 
 class TranslatorTest {
 

@@ -42,6 +42,18 @@
                         <argument>-Dlanguage=Java</argument>
                     </arguments>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>antlr4</goal>
+                        </goals>
+                        <configuration>
+                            <libDirectory>src/main/java/org/music4j/rubato</libDirectory>
+                            <sourceDirectory>src/main/java/org/music4j/rubato</sourceDirectory>
+                            <outputDirectory>src/main/java/org/music4j/rubato/gen</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

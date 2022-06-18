@@ -12,12 +12,12 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
-import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.ParseException;
-import org.music4j.grammar.PitchVisitor;
-import org.music4j.grammar.RubatoTranslator;
-import org.music4j.grammar.gen.RubatoLexer;
-import org.music4j.grammar.gen.RubatoParser;
+import org.music4j.rubato.ErrorCollector;
+import org.music4j.rubato.ParseException;
+import org.music4j.rubato.PitchVisitor;
+import org.music4j.rubato.RubatoTranslator;
+import org.music4j.rubato.gen.RubatoLexer;
+import org.music4j.rubato.gen.RubatoParser;
 
 /**
  * A Pitch or Tone-Pitch consists of a {@link Step}, an {@linkplain Alter
@@ -37,7 +37,7 @@ public final class Pitch implements Comparable<Pitch> {
      * @see #asMidiNumber()
      */
     private final static Comparator<Pitch> COMPARATOR = comparingInt(Pitch::asInt);
-    
+
     /**
      * Translator for to String output
      */

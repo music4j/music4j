@@ -7,11 +7,11 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
-import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.ParseException;
-import org.music4j.grammar.TimeVisitor;
-import org.music4j.grammar.gen.RubatoLexer;
-import org.music4j.grammar.gen.RubatoParser;
+import org.music4j.rubato.ErrorCollector;
+import org.music4j.rubato.ParseException;
+import org.music4j.rubato.TimeVisitor;
+import org.music4j.rubato.gen.RubatoLexer;
+import org.music4j.rubato.gen.RubatoParser;
 
 /**
  * A BarTime is a rational number which represents the duration of a Note or a
@@ -302,7 +302,8 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
 
     /**
      * Returns true if the time is equivalent to a quarter note. As default this
-     * time is not displayed in a parse.
+     * time is not displayed in a parse. Since this method is used in a template
+     * it is required to adhere to a special naming pattern.
      *
      * @return true if the time is equivalent to a quarter note.
      */

@@ -12,12 +12,12 @@ import org.antlr.v4.runtime.TokenStream;
 import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
-import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.NoteVisitor;
-import org.music4j.grammar.ParseException;
-import org.music4j.grammar.RubatoTranslator;
-import org.music4j.grammar.gen.RubatoLexer;
-import org.music4j.grammar.gen.RubatoParser;
+import org.music4j.rubato.ErrorCollector;
+import org.music4j.rubato.NoteVisitor;
+import org.music4j.rubato.ParseException;
+import org.music4j.rubato.RubatoTranslator;
+import org.music4j.rubato.gen.RubatoLexer;
+import org.music4j.rubato.gen.RubatoParser;
 import org.music4j.utils.ForwardingNavigableSet;
 
 /**

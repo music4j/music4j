@@ -16,11 +16,11 @@ import org.music4j.Measurable;
 import org.music4j.Note;
 import org.music4j.Voice;
 import org.music4j.VoicePackException;
-import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.ParseException;
-import org.music4j.grammar.VoiceVisitor;
-import org.music4j.grammar.gen.RubatoLexer;
-import org.music4j.grammar.gen.RubatoParser;
+import org.music4j.rubato.ErrorCollector;
+import org.music4j.rubato.ParseException;
+import org.music4j.rubato.VoiceVisitor;
+import org.music4j.rubato.gen.RubatoLexer;
+import org.music4j.rubato.gen.RubatoParser;
 import org.music4j.utils.ForwardingNavigableMap;
 
 public final class TreeMapVoice extends ForwardingNavigableMap<BarTime, Note> implements Voice {

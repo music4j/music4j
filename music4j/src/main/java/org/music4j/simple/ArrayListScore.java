@@ -16,11 +16,11 @@ import org.music4j.Part;
 import org.music4j.Score;
 import org.music4j.Staff;
 import org.music4j.Voice;
-import org.music4j.grammar.ErrorCollector;
-import org.music4j.grammar.ParseException;
-import org.music4j.grammar.ScoreVisitor;
-import org.music4j.grammar.gen.RubatoLexer;
-import org.music4j.grammar.gen.RubatoParser;
+import org.music4j.rubato.ErrorCollector;
+import org.music4j.rubato.ParseException;
+import org.music4j.rubato.ScoreVisitor;
+import org.music4j.rubato.gen.RubatoLexer;
+import org.music4j.rubato.gen.RubatoParser;
 import org.music4j.utils.ForwardingList;
 import org.music4j.utils.StringOutput;
 
