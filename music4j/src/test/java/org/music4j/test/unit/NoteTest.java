@@ -270,7 +270,7 @@ class NoteTest {
         @Test
         void parseThrowsException() {
             IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> Note.of("[C#' E Gx'/2"));
-            assertEquals("org.music4j.grammar.ParseException: line 1: 10 extraneous input '/' expecting {']', STEP} ",
+            assertEquals("org.music4j.rubato.ParseException: line 1: 10 extraneous input '/' expecting {']', STEP} ",
                     e.getMessage());
         }
     }

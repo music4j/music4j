@@ -312,9 +312,6 @@ class BarTimeTest {
         assertThrows(NullPointerException.class, () -> BarTime.min(first, null));
     }
 
-    /**
-     * min throws a NullpointerException if the second is null.
-     */
     @Test
     void toStringInt() {
         BarTime first = BarTime.of(4);
@@ -345,7 +342,7 @@ class BarTimeTest {
         @Test
         void parseThrowsException() {
             IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> BarTime.of("1//2"));
-            assertEquals("org.music4j.grammar.ParseException: line 1: 2 extraneous input '/' expecting INT ",
+            assertEquals("org.music4j.rubato.ParseException: line 1: 2 extraneous input '/' expecting INT ",
                     e.getMessage());
         }
     }

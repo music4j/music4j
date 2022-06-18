@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import org.music4j.BarTime;
 import org.music4j.Note;
 import org.music4j.Pitch;
+import org.music4j.rubato.renderer.BarTimeRenderer;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroupFile;
 
@@ -14,8 +15,9 @@ public class RubatoTranslator {
     private final STGroupFile groupFile;
 
     public RubatoTranslator() {
-        Path pathToFile = Paths.get("src", "main", "java", "org", "music4j", "grammar", "Rubato.stg");
+        Path pathToFile = Paths.get("src", "main", "java", "org", "music4j", "rubato", "Rubato.stg");
         groupFile = new STGroupFile(pathToFile.toString());
+        groupFile.registerRenderer(BarTime.class, new BarTimeRenderer());
     }
 
     public String translateTime(BarTime time) {

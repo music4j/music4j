@@ -1,17 +1,19 @@
 
 note(n) ::= "<if(n.rest)><noteRest(n)><elseif(n.single)><noteSingle(n)><elseif(n.chord)><noteChord(n)><endif><noteSuffix(n)>"
 
-noteRest(n) ::= "R<time(n.duration)>"
+noteRest(n) ::= "R<duration(n.duration)>"
 
-noteSingle(n) ::= "<n:{p|<pitch(p)>}><time(n.duration)>"
+noteSingle(n) ::= "<n:{p|<pitch(p)>}><duration(n.duration)>"
 
-noteChord(n) ::= "[<n:{p|<pitch(p)>}; separator=\" \">]<time(n.duration)>"
+noteChord(n) ::= "[<n:{p|<pitch(p)>}; separator=\" \">]<duration(n.duration)>"
 
 pitch(p) ::= "<p.step><alterMap.(p.alter)><octaveMap.(p.octave)>"
 
 noteSuffix(n) ::= "<if(n.tieStart)>~<endif>"
 
-time(t) ::= "<if(!t.trivial)><t><endif>"
+duration(d) ::= "<d; format=\"trivial\">"
+
+time(t) ::= "<t>"
 
 alterMap ::= [
     "NATURAL":"",

@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.TokenStream;
 import org.music4j.rubato.ErrorCollector;
 import org.music4j.rubato.ParseException;
+import org.music4j.rubato.RubatoTranslator;
 import org.music4j.rubato.TimeVisitor;
 import org.music4j.rubato.gen.RubatoLexer;
 import org.music4j.rubato.gen.RubatoParser;
@@ -36,6 +37,8 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
      */
     private static final Comparator<BarTime> COMPARATOR = (first, second) -> Long
             .compare((long) first.numerator * second.denominator, (long) second.numerator * first.denominator);
+
+    private static final RubatoTranslator TRANSLATOR = new RubatoTranslator();
 
     /**
      * BarTime of 0/1
@@ -313,13 +316,7 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
 
     @Override
     public String toString() {
-        if (denominator == 1) {
-            return String.valueOf(numerator);
-        } else if (numerator == 1) {
-            return String.format("/%s", denominator);
-        } else {
-            return String.format("%d/%d", numerator, denominator);
-        }
+        return TRANSLATOR.translateTime(this);
     }
 
     @Override
