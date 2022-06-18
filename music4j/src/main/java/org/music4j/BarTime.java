@@ -303,17 +303,6 @@ public final class BarTime implements Comparable<BarTime>, Measurable {
         return this;
     }
 
-    /**
-     * Returns true if the time is equivalent to a quarter note. As default this
-     * time is not displayed in a parse. Since this method is used in a template
-     * it is required to adhere to a special naming pattern.
-     *
-     * @return true if the time is equivalent to a quarter note.
-     */
-    public boolean isTrivial() {
-        return equals(QUARTER);
-    }
-
     @Override
     public String toString() {
         return TRANSLATOR.translateTime(this);
